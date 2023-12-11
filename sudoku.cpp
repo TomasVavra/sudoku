@@ -1,7 +1,7 @@
 # include <iostream>
 
 int s[9][9][10];
-int i,j,k,l,m,n;
+int i,j,k,l,m,n,p;
 const int z[9][9] = {
     {0,0,0,0,0,0,3,9,6},
     {3,0,0,0,0,8,2,0,0},
@@ -24,7 +24,14 @@ void read ()
 
             for (k=1; k<10; k++) 
             {
-                s[i][j][k] = k;
+                if (s[i][j][0] == 0)
+                {
+                    s[i][j][k] = k;
+                }
+                else 
+                {
+                    s[i][j][k] = 0;
+                }
             }
         }
     }
@@ -76,13 +83,52 @@ void rows_columns_square (int st[9][9][10])
     }
 }
 
+void check (int st[9][9][10])       // check if there is only one solution for s[i][j][0]
+{
+    int o = 0;
+    int winner;
+    for (i=0; i<9; i++) 
+    {
+        for (j=0; j<9; j++) 
+        {
+            o=0;
+            for (k=1; k<10; k++) 
+            {
+                if ((s[i][j][k] != 0) && (s[i][j][0]==0))
+                {
+                    o++;
+                    winner = s[i][j][k];
+                }
+            }
+            if (o==1)
+            {
+                s[i][j][0] = winner;
+            }
+        }
+    }
+}
+
 int main () {
 
 read ();
 write (s);
 
-rows_columns (s);
+rows_columns_square (s);
 write (s);
+
+check (s);
+write (s);
+
+std::cout << "**********************" << std::endl;
+std::cout << std::endl;
+
+for (p=0; p<10; p++)
+{
+    rows_columns_square (s);
+    check (s);
+    write (s);
+}
+
 
 return 0;
 }

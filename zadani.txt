@@ -11,6 +11,9 @@ int z[9][9] = {
 };
 
 
+
+
+
 z[i][j]
 i radky
 j sloupce 
