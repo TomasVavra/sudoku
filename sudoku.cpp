@@ -66,7 +66,7 @@ void rows_columns_square (int st[9][9][10])
     {
         for (j=0; j<9; j++) 
         {
-            if (s[i][j][0] != 0)
+            if (s[i][j][0] != 0)            // if solution exists
             {
                 for (l=0; l<9; l++)
                 {
@@ -103,7 +103,7 @@ void check_third_dimension (int st[9][9][10])       // check if there is only on
                 }
                 if (s[i][j][0] != 0)
                 {
-                    s[i][j][k] = 0;
+                    s[i][j][k] = 0;     // if the sulution exists s[i][j][0] != 0, erase all other posible solutions 
                 }
             }
             if (o==1)
@@ -114,8 +114,11 @@ void check_third_dimension (int st[9][9][10])       // check if there is only on
     }
 }
 
-void check_rows_columns_square (int st[9][9][10])       // check if the number is present in row, column, square
-{                                                   // dodelat
+// check if the number is present in row, column or square.
+// If the number is present in the row, column or square only onece, it is the solution.
+// Even if there are more possibilities for given field.
+void check_rows_columns_square (int st[9][9][10])
+{
     int i,j,k,l,m,n,n_in_row,n_in_column,n_in_square;
     for (i=0; i<9; i++) 
     {
@@ -165,6 +168,8 @@ int main () {
 
 read ();
 write (s);
+
+s[0][1][0] = 7;
 
 std::cout << "**********************" << std::endl;
 std::cout << std::endl;
