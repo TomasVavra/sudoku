@@ -1,6 +1,10 @@
 # include <iostream>
 
 int s[9][9][10];
+int error_row = 888;
+int error_column = 888;
+int error_square_row = 888;
+int error_square_column = 888;
 
 const int z[9][9] = {
 {9,0,0,0,6,3,0,5,0},
@@ -163,6 +167,51 @@ void check_rows_columns_square (int st[9][9][10])
     }
 }
 
+// check if the solution comply with sudoku rules
+void check_one_to_nine (int st[9][9][10])
+{
+    int i,j,k,l,m,n,sum_row,sum_column,sum_square;
+    for (i=0; i<9; i++) 
+    {
+        sum_row = 0;
+        sum_column = 0;
+        for (j=0; j<9; j++) 
+        {
+            sum_row = sum_row + s[i][j][0];
+            sum_column = sum_column + s[j][i][0];       
+        }
+
+        if (sum_row != 45)
+        {
+            error_row = i;
+        }
+        if (sum_column != 45)
+        {
+            error_column = i;
+        }
+    }
+    
+    for (k=0; k<3; k++)
+    {
+        for (l=0; l<3; l++)
+        {
+            sum_square = 0;
+            for (m=0; m<3; m++)
+            {
+                for (n=0; n<3; n++)
+                    {
+                        sum_square = sum_square + s[m+3*k][n+3*l][0];    // delete the number in square
+                    }
+            }
+            if (sum_square != 45)
+            {
+                error_square_row = k;
+                error_square_column = l;
+            }
+        }    
+    }    
+    
+}
 
 int main () {
 
@@ -184,6 +233,11 @@ for (int p=0; p<20; p++)
 
 
 
+check_one_to_nine (s);
+std::cout << "error_row = " << error_row << std::endl;
+std::cout << "error_column = " << error_column << std::endl;
+std::cout << "error_square_row = " << error_square_row << std::endl;
+std::cout << "error_square_column = " << error_square_column << std::endl;
 
 return 0;
 }
