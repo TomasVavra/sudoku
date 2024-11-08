@@ -246,10 +246,10 @@ for (int p=0; p<20; p++)
 
 
 check_one_to_nine (s);
-std::cout << "error_row = " << error_row << std::endl;
-std::cout << "error_column = " << error_column << std::endl;
-std::cout << "error_square_row = " << error_square_row << std::endl;
-std::cout << "error_square_column = " << error_square_column << std::endl;
+std::cout << "888 no error, error_row = " << error_row << std::endl;
+std::cout << "888 no error, error_column = " << error_column << std::endl;
+std::cout << "888 no error, error_square_row = " << error_square_row << std::endl;
+std::cout << "888 no error, error_square_column = " << error_square_column << std::endl;
 
 return 0;
 }
