@@ -32,22 +32,22 @@ const int z[9][9] = {
 
 void read ()
 {
-    int i,j,k;
-    for (i=0; i<9; i++) 
+    int row_index,col_index,up_index;
+    for (row_index=0; row_index<9; row_index++) 
     {
-        for (j=0; j<9; j++) 
+        for (col_index=0; col_index<9; col_index++) 
         {
-            s[i][j][0] = z[i][j];
+            s[row_index][col_index][0] = z[row_index][col_index];
 
-            for (k=1; k<10; k++) 
+            for (up_index=1; up_index<10; up_index++) 
             {
-                if (s[i][j][0] == 0)
+                if (s[row_index][col_index][0] == 0)
                 {
-                    s[i][j][k] = k;
+                    s[row_index][col_index][up_index] = up_index;
                 }
                 else 
                 {
-                    s[i][j][k] = 0;
+                    s[row_index][col_index][up_index] = 0;
                 }
             }
         }
@@ -56,45 +56,45 @@ void read ()
 
 void write (int st[9][9][10])
 {
-    int i,j,k;
-    for (i=0; i<9; i++) 
+    int row_index,col_index,up_index;
+    for (row_index=0; row_index<9; row_index++) 
     {
-        for (j=0; j<9; j++) 
+        for (col_index=0; col_index<9; col_index++) 
         {
-            for (k=0; k<10; k++) 
+            for (up_index=0; up_index<10; up_index++) 
             {
-                std::cout << s[i][j][k];
-                if (k==0) {std::cout << "*";}
+                std::cout << s[row_index][col_index][up_index];
+                if (up_index==0) {std::cout << "*";}
             }
             std::cout << " ";
-            if (j==2 || j==5) {std::cout << "  ";}
+            if (col_index==2 || col_index==5) {std::cout << "  ";}
         }
         std::cout << std::endl;
-        if (i==2 || i==5) {std::cout << std::endl;}
+        if (row_index==2 || row_index==5) {std::cout << std::endl;}
     }
     std::cout << std::endl << std::endl << std::endl;
 }
 
 void rows_columns_square (int st[9][9][10])
 {
-    int i,j,l,m,n;
-    for (i=0; i<9; i++) 
+    int row_index,col_index,l,m,n;
+    for (row_index=0; row_index<9; row_index++) 
     {
-        for (j=0; j<9; j++) 
+        for (col_index=0; col_index<9; col_index++) 
         {
-            if (s[i][j][0] != 0)            // if solution exists
+            if (s[row_index][col_index][0] != 0)            // if solution exists
             {
                 for (l=0; l<9; l++)
                 {
-                    s[l][j][s[i][j][0]] = 0;     // delete the number in j column
-                    s[i][l][s[i][j][0]] = 0;     // delete the number in i row
+                    s[l][col_index][s[row_index][col_index][0]] = 0;     // delete the number in j column
+                    s[row_index][l][s[row_index][col_index][0]] = 0;     // delete the number in i row
                 }
 
                 for (m=0; m<3; m++)
                 {
                     for (n=0; n<3; n++)
                     {
-                        s[(i/3)*3+m][(j/3)*3+n][s[i][j][0]] = 0;    // delete the number in square
+                        s[(row_index/3)*3+m][(col_index/3)*3+n][s[row_index][col_index][0]] = 0;    // delete the number in square
                     }
                 }
             }
@@ -230,10 +230,14 @@ int main () {
 read ();
 write (s);
 
-//s[0][1][0] = 7;
+
+
+// s[0][1][0] = 7;
 
 std::cout << "**********************" << std::endl;
 std::cout << std::endl;
+
+std::cout << s[2][0][0] << std::endl;
 
 for (int p=0; p<20; p++)
 {
