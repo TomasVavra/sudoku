@@ -1,6 +1,6 @@
 # include <iostream>
+# include "functions.h"
 
-int s[9][9][10];
 int error_row = 888;
 int error_column = 888;
 int error_square_row = 888;
@@ -30,206 +30,13 @@ const int z[9][9] = {
 {0,0,7,0,0,2,0,3,0},
 };
 
-void read ()
-{
-    int row_index,col_index,up_index;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            s[row_index][col_index][0] = z[row_index][col_index];
-
-            for (up_index=1; up_index<10; up_index++) 
-            {
-                if (s[row_index][col_index][0] == 0)
-                {
-                    s[row_index][col_index][up_index] = up_index;
-                }
-                else 
-                {
-                    s[row_index][col_index][up_index] = 0;
-                }
-            }
-        }
-    }
-}
-
-void write ()
-{
-    int row_index,col_index,up_index;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            for (up_index=0; up_index<10; up_index++) 
-            {
-                std::cout << s[row_index][col_index][up_index];
-                if (up_index==0) {std::cout << "*";}
-            }
-            std::cout << " ";
-            if (col_index==2 || col_index==5) {std::cout << "  ";}
-        }
-        std::cout << std::endl;
-        if (row_index==2 || row_index==5) {std::cout << std::endl;}
-    }
-    std::cout << std::endl << std::endl << std::endl;
-}
-
-void rows_columns_square ()
-{
-    int row_index,col_index,l,m,n;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            if (s[row_index][col_index][0] != 0)            // if solution exists
-            {
-                for (l=0; l<9; l++)
-                {
-                    s[l][col_index][s[row_index][col_index][0]] = 0;     // delete the number in j column
-                    s[row_index][l][s[row_index][col_index][0]] = 0;     // delete the number in i row
-                }
-
-                for (m=0; m<3; m++)
-                {
-                    for (n=0; n<3; n++)
-                    {
-                        s[(row_index/3)*3+m][(col_index/3)*3+n][s[row_index][col_index][0]] = 0;    // delete the number in square
-                    }
-                }
-            }
-        }
-    }
-}
-
-// check if there is only one solution for s[i][j][0]
-void check_third_dimension ()
-{
-    int row_index,col_index,up_index,no_of_solutions,winner;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            no_of_solutions=0;
-            for (up_index=1; up_index<10; up_index++) 
-            {
-                if ((s[row_index][col_index][up_index] != 0) && (s[row_index][col_index][0]==0))
-                {
-                    no_of_solutions++;
-                    winner = s[row_index][col_index][up_index];
-                }
-                if (s[row_index][col_index][0] != 0)
-                {
-                    s[row_index][col_index][up_index] = 0;     // if the sulution exists s[i][j][0] != 0, erase all other posible solutions 
-                }
-            }
-            if (no_of_solutions==1)
-            {
-                s[row_index][col_index][0] = winner;
-            }
-        }
-    }
-}
-
-// check if the number is present in row, column or square.
-// If the number is present in the row, column or square only onece, it is the solution.
-// Even if there are more possibilities for given field.
-void check_rows_columns_square ()
-{
-    int row_index,col_index,up_index,l,m,n,n_in_row,n_in_column,n_in_square;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            for (up_index=1; up_index<10; up_index++) 
-            {
-                if ((s[row_index][col_index][up_index] != 0) && (s[row_index][col_index][0] == 0))
-                {
-                    n_in_row = 0;
-                    n_in_column = 0;
-                    n_in_square = 0;
-                    for (l=0; l<9; l++)
-                    {
-                        if (s[row_index][l][up_index] !=0)
-                        {
-                            n_in_row++;
-                        }
-                        if (s[l][col_index][up_index] !=0)
-                        {
-                            n_in_column++;
-                        }                     
-                    }
-                    for (m=0; m<3; m++)
-                    {
-                        for (n=0; n<3; n++)
-                        {
-                            if (s[(row_index/3)*3+m][(col_index/3)*3+n][up_index] != 0)
-                            {
-                                n_in_square++;
-                            }
-                        }
-                    }
-
-                    if (n_in_row == 1 || n_in_column == 1 || n_in_square == 1 )
-                    {
-                        s[row_index][col_index][0] = s[row_index][col_index][up_index];
-                    }
-                }
-            }
-        }
-    }
-}
-
-// check if the solution comply with sudoku rules
-void is_solution_valid ()
-{
-    int row_index,col_index,k,l,m,n,sum_row,sum_column,sum_square;
-    for (row_index=0; row_index<9; row_index++) 
-    {
-        sum_row = 0;
-        sum_column = 0;
-        for (col_index=0; col_index<9; col_index++) 
-        {
-            sum_row = sum_row + s[row_index][col_index][0];
-            sum_column = sum_column + s[col_index][row_index][0];       
-        }
-
-        if (sum_row != 45)
-        {
-            error_row = row_index;
-        }
-        if (sum_column != 45)
-        {
-            error_column = row_index;
-        }
-    }
-    
-    for (k=0; k<3; k++)
-    {
-        for (l=0; l<3; l++)
-        {
-            sum_square = 0;
-            for (m=0; m<3; m++)
-            {
-                for (n=0; n<3; n++)
-                    {
-                        sum_square = sum_square + s[m+3*k][n+3*l][0];    // delete the number in square
-                    }
-            }
-            if (sum_square != 45)
-            {
-                error_square_row = k;
-                error_square_column = l;
-            }
-        }    
-    }    
-    
-}
 
 int main () {
 
-read ();
-write ();
+int solution[9][9][10];
+
+read (z, solution);
+write (solution);
 
 
 
@@ -238,19 +45,19 @@ write ();
 std::cout << "**********************" << std::endl;
 std::cout << std::endl;
 
-std::cout << s[2][0][0] << std::endl;
+std::cout << solution[2][0][0] << std::endl;
 
 for (int p=0; p<20; p++)
 {
-    rows_columns_square ();
-    check_rows_columns_square ();
-    check_third_dimension ();
-    write ();
+    rows_columns_square (solution);
+    check_rows_columns_square (solution);
+    check_third_dimension (solution);
+    write (solution);
 }
 
 
 
-is_solution_valid ();
+is_solution_valid (error_row, error_column, error_square_row, error_square_column, solution);
 std::cout << "888 no error, error_row = " << error_row << std::endl;
 std::cout << "888 no error, error_column = " << error_column << std::endl;
 std::cout << "888 no error, error_square_row = " << error_square_row << std::endl;
