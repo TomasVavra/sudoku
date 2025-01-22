@@ -82,27 +82,27 @@ void delete_possibilities_in_row_col_square (int (&solution)[9][9][10])
 void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 {
     int row_index, col_index, up_index;
-    int no_of_solutions;
+    int number_of_solutions;
     int winner;
     for (row_index = 0; row_index < 9; row_index++) 
     {
         for (col_index = 0; col_index < 9; col_index++) 
         {
             int& sudoku_cell = solution[row_index][col_index][0];
-            no_of_solutions = 0;
+            number_of_solutions = 0;
             for (up_index = 1; up_index < 10; up_index++) 
             {
-                if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
+                if ( (sudoku_cell == 0))
                 {
-                    no_of_solutions++;
+                    number_of_solutions++;
                     winner = solution[row_index][col_index][up_index];
                 }
                 if (sudoku_cell != 0)
                 {
-                    solution[row_index][col_index][up_index] = 0;     // if the sulution exists sudoku_cell != 0, erase all other posible solutions 
+                    solution[row_index][col_index][up_index] = 0;     // if the sulution exists (sudoku_cell != 0), erase all other posible solutions 
                 }
             }
-            if (no_of_solutions == 1)
+            if (number_of_solutions == 1)
             {
                 sudoku_cell = winner;
             }
@@ -112,7 +112,57 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 
 // check if the number is present in row, column or square.
 // If the number is present in the row, column or square only onece, it is the solution.
-// Even if there are more possibilities for given field.
+// Even if there are more possibilities for given cell.
+// void check_rows_columns_square (int (&solution)[9][9][10])
+// {
+//     int row_index,col_index,up_index;
+//     int square_3x3_row_index, square_3x3_col_index;
+//     int l;
+//     int n_in_row,n_in_column,n_in_square;
+//     for (row_index = 0; row_index < 9; row_index++) 
+//     {
+//         for (col_index = 0; col_index < 9; col_index++) 
+//         {
+//             int& sudoku_cell = solution[row_index][col_index][0];
+//             for (up_index = 1; up_index < 10; up_index++) 
+//             {
+//                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
+//                 {
+//                     n_in_row = 0;
+//                     n_in_column = 0;
+//                     n_in_square = 0;
+//                     for (l = 0; l < 9; l++)
+//                     {
+//                         if (solution[row_index][l][up_index] !=0)
+//                         {
+//                             n_in_row++;
+//                         }
+//                         if (solution[l][col_index][up_index] !=0)
+//                         {
+//                             n_in_column++;
+//                         }                     
+//                     }
+//                     for (square_3x3_row_index = 0; square_3x3_row_index < 3; square_3x3_row_index++)
+//                     {
+//                         for (square_3x3_col_index = 0; square_3x3_col_index < 3; square_3x3_col_index++)
+//                         {
+//                             if (solution[(row_index/3)*3 + square_3x3_row_index][(col_index/3)*3 + square_3x3_col_index][up_index] != 0)
+//                             {
+//                                 n_in_square++;
+//                             }
+//                         }
+//                     }
+
+//                     if (n_in_row == 1 || n_in_column == 1 || n_in_square == 1 )
+//                     {
+//                         sudoku_cell = solution[row_index][col_index][up_index];
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+
 void check_rows_columns_square (int (&solution)[9][9][10])
 {
     int row_index,col_index,up_index;
@@ -123,9 +173,10 @@ void check_rows_columns_square (int (&solution)[9][9][10])
     {
         for (col_index = 0; col_index < 9; col_index++) 
         {
+            int& sudoku_cell = solution[row_index][col_index][0];
             for (up_index = 1; up_index < 10; up_index++) 
             {
-                if ((solution[row_index][col_index][up_index] != 0) && (solution[row_index][col_index][0] == 0))
+                if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
                 {
                     n_in_row = 0;
                     n_in_column = 0;
@@ -154,7 +205,7 @@ void check_rows_columns_square (int (&solution)[9][9][10])
 
                     if (n_in_row == 1 || n_in_column == 1 || n_in_square == 1 )
                     {
-                        solution[row_index][col_index][0] = solution[row_index][col_index][up_index];
+                        sudoku_cell = solution[row_index][col_index][up_index];
                     }
                 }
             }
