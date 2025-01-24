@@ -1,12 +1,15 @@
 # include <iostream>
 # include "functions.h"
 
+
+int main () {
+
 int error_row = 888;
 int error_column = 888;
 int error_square_row = 888;
 int error_square_column = 888;
 
-// const int z[9][9] = {
+// const int instructions[9][9] = {
 // {9,0,0,0,6,3,0,5,0},
 // {0,0,2,0,0,1,0,9,0},
 // {0,0,4,9,0,0,7,0,1},
@@ -31,9 +34,9 @@ const int instructions[9][9] = {
 };
 
 
-int main () {
 
 int solution[9][9][10];
+int last_solution[9][9][10];
 
 read (instructions, solution);
 write (solution);
@@ -45,14 +48,30 @@ write (solution);
 std::cout << "**********************" << std::endl;
 std::cout << std::endl;
 
-std::cout << solution[2][0][0] << std::endl;
+//std::cout << solution[2][0][0] << std::endl;
 
-for (int p = 0; p < 20; p++)
+while (! are_solutions_identical(solution, last_solution))
 {
+    copy_1st_solution_to_2nd(solution, last_solution);
+
     delete_possibilities_in_row_col_square (solution);
-    check_rows_columns_square (solution);
+    delete_obsolete_possibilities (solution);
+    // only_once_in_rows_columns_square (solution);
+    
+    check_rows (solution);
+    delete_obsolete_possibilities (solution);
+    
+    // check_cols (solution);
+    // delete_obsolete_possibilities (solution);
+
+    // check_squares (solution);
+    // delete_obsolete_possibilities (solution);
+
     check_if_only_1_cell_solution_exists (solution);
+    delete_obsolete_possibilities (solution);
+    
     write (solution);
+    
 }
 
 
