@@ -4,10 +4,6 @@
 
 int main () {
 
-int error_row = 888;
-int error_column = 888;
-int error_square_row = 888;
-int error_square_column = 888;
 
 // const int instructions[9][9] = {
 // {9,0,0,0,6,3,0,5,0},
@@ -33,22 +29,14 @@ const int instructions[9][9] = {
 {0,0,7,0,0,2,0,3,0},
 };
 
-
-
 int solution[9][9][10];
 int last_solution[9][9][10];
 
 read (instructions, solution);
 write (solution);
 
-
-
-// s[0][1][0] = 7;
-
 std::cout << "**********************" << std::endl;
 std::cout << std::endl;
-
-//std::cout << solution[2][0][0] << std::endl;
 
 while (! are_solutions_identical(solution, last_solution))
 {
@@ -56,16 +44,18 @@ while (! are_solutions_identical(solution, last_solution))
 
     delete_possibilities_in_row_col_square (solution);
     delete_obsolete_possibilities (solution);
+
     // only_once_in_rows_columns_square (solution);
+    // delete_obsolete_possibilities (solution);
     
-    check_rows (solution);
-    delete_obsolete_possibilities (solution);
+    // check_rows (solution);
+    // delete_obsolete_possibilities (solution);
     
     // check_cols (solution);
     // delete_obsolete_possibilities (solution);
 
-    // check_squares (solution);
-    // delete_obsolete_possibilities (solution);
+    check_squares (solution);
+    delete_obsolete_possibilities (solution);
 
     check_if_only_1_cell_solution_exists (solution);
     delete_obsolete_possibilities (solution);
@@ -74,16 +64,7 @@ while (! are_solutions_identical(solution, last_solution))
     
 }
 
-
-
-is_solution_valid (error_row, error_column, error_square_row, error_square_column, solution);
-std::cout << "888 no error, error_row = " << error_row << std::endl;
-std::cout << "888 no error, error_column = " << error_column << std::endl;
-std::cout << "888 no error, error_square_row = " << error_square_row << std::endl;
-std::cout << "888 no error, error_square_column = " << error_square_column << std::endl;
-std::cout << std::endl;
-
-
+std::cout << "is solution valid: " << is_solution_valid (solution) << std::endl;
 
 return 0;
 }

@@ -24,4 +24,4 @@ void check_cols (int (&solution)[9][9][10]);
 
 void check_squares (int (&solution)[9][9][10]);
 
-void is_solution_valid (int &error_row, int &error_column, int &error_square_row, int &error_square_column, int (&solution)[9][9][10]);
+bool is_solution_valid (const int (&solution)[9][9][10]);
