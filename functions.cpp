@@ -12,7 +12,7 @@ void read (const int (&instructions)[9][9], int (&solution)[9][9][10])
         {
             solution[row_index][col_index][0] = instructions[row_index][col_index];
 
-            for (int up_index = 1; up_index < 10; up_index++) 
+            for (int up_index = 1; up_index <= 9; up_index++) 
             {
                 if (solution[row_index][col_index][0] == 0)
                 {
@@ -34,7 +34,7 @@ void write (int (&solution)[9][9][10])
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            for (int up_index = 0; up_index < 10; up_index++) 
+            for (int up_index = 0; up_index <= 9; up_index++) 
             {
                 std::cout << solution[row_index][col_index][up_index];
                 if (up_index == 0) {std::cout << "*";}
@@ -55,7 +55,7 @@ bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solut
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            for (int up_index = 0; up_index < 10; up_index++)
+            for (int up_index = 0; up_index <= 9; up_index++)
             {
                 if (solution1[row_index][col_index][up_index] != solution2[row_index][col_index][up_index])
                 {
@@ -74,7 +74,7 @@ void copy_1st_solution_to_2nd(const int (&solution)[9][9][10], int (&solution_co
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            for (int up_index = 0; up_index < 10; up_index++)
+            for (int up_index = 0; up_index <= 9; up_index++)
             {
                 solution_copy[row_index][col_index][up_index] = solution[row_index][col_index][up_index];
             }
@@ -120,7 +120,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
         {
             int& sudoku_cell = solution[row_index][col_index][0];
             int number_of_solutions = 0;
-            for (int up_index = 1; up_index < 10; up_index++) 
+            for (int up_index = 1; up_index <= 9; up_index++) 
             {
                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
                 {
@@ -146,7 +146,7 @@ void only_once_in_rows_columns_square (int (&solution)[9][9][10])
         for (int col_index = 0; col_index < 9; col_index++) 
         {
             int& sudoku_cell = solution[row_index][col_index][0];
-            for (int up_index = 1; up_index < 10; up_index++) 
+            for (int up_index = 1; up_index <= 9; up_index++) 
             {
                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
                 {
@@ -189,7 +189,7 @@ void only_once_in_rows_columns_square (int (&solution)[9][9][10])
 // If specific number is possible only in one box in row, write it to the box
 void check_rows (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    for (int up_index = 1; up_index <= 9; up_index++)
     {
         
         for (int row_index = 0; row_index < 9; row_index++) 
@@ -216,7 +216,7 @@ void check_rows (int (&solution)[9][9][10])
 
 void check_cols (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    for (int up_index = 1; up_index <= 9; up_index++)
     {      
         for (int col_index = 0; col_index < 9; col_index++) 
         {
@@ -242,7 +242,7 @@ void check_cols (int (&solution)[9][9][10])
 
 void check_squares (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    for (int up_index = 1; up_index <= 9; up_index++)
     {
         for (int chose_square_3x3_row_index = 0; chose_square_3x3_row_index < 3; chose_square_3x3_row_index++)
         {
@@ -282,7 +282,7 @@ void delete_obsolete_possibilities (int (&solution)[9][9][10])
         for (int col_index = 0; col_index < 9; col_index++) 
         {
             int& sudoku_cell = solution[row_index][col_index][0];
-            for (int up_index = 1; up_index < 10; up_index++) 
+            for (int up_index = 1; up_index <= 9; up_index++) 
             {
                 if (sudoku_cell != 0)
                 {
