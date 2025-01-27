@@ -139,51 +139,52 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 // check if the number is present in row, column or square.
 // If the number is present in the row, column or square only once, it is the solution.
 // Even if there are more possibilities for given cell.
-void only_once_in_rows_columns_square (int (&solution)[9][9][10])
-{
-    for (int row_index = 0; row_index < 9; row_index++) 
-    {
-        for (int col_index = 0; col_index < 9; col_index++) 
-        {
-            int& sudoku_cell = solution[row_index][col_index][0];
-            for (int up_index = 1; up_index <= 9; up_index++) 
-            {
-                if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
-                {
-                    int counter_row = 0;
-                    int counter_col = 0;
-                    int counter_square = 0;
-                    for (int l = 0; l < 9; l++)
-                    {
-                        if (solution[row_index][l][up_index] !=0)
-                        {
-                            counter_row++;
-                        }
-                        if (solution[l][col_index][up_index] !=0)
-                        {
-                            counter_col++;
-                        }                     
-                    }
-                    for (int square_3x3_row_index = 0; square_3x3_row_index < 3; square_3x3_row_index++)
-                    {
-                        for (int square_3x3_col_index = 0; square_3x3_col_index < 3; square_3x3_col_index++)
-                        {
-                            if (solution[(row_index/3)*3 + square_3x3_row_index][(col_index/3)*3 + square_3x3_col_index][up_index] != 0)
-                            {
-                                counter_square++;
-                            }
-                        }
-                    }
 
-                    if (counter_row == 1 || counter_col == 1 || counter_square == 1 )
-                    {
-                        sudoku_cell = solution[row_index][col_index][up_index];
-                    }
-                }
-            }
-        }
-    }
-}
+// void only_once_in_rows_columns_square (int (&solution)[9][9][10])
+// {
+//     for (int row_index = 0; row_index < 9; row_index++) 
+//     {
+//         for (int col_index = 0; col_index < 9; col_index++) 
+//         {
+//             int& sudoku_cell = solution[row_index][col_index][0];
+//             for (int up_index = 1; up_index <= 9; up_index++) 
+//             {
+//                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
+//                 {
+//                     int counter_row = 0;
+//                     int counter_col = 0;
+//                     int counter_square = 0;
+//                     for (int l = 0; l < 9; l++)
+//                     {
+//                         if (solution[row_index][l][up_index] !=0)
+//                         {
+//                             counter_row++;
+//                         }
+//                         if (solution[l][col_index][up_index] !=0)
+//                         {
+//                             counter_col++;
+//                         }                     
+//                     }
+//                     for (int square_3x3_row_index = 0; square_3x3_row_index < 3; square_3x3_row_index++)
+//                     {
+//                         for (int square_3x3_col_index = 0; square_3x3_col_index < 3; square_3x3_col_index++)
+//                         {
+//                             if (solution[(row_index/3)*3 + square_3x3_row_index][(col_index/3)*3 + square_3x3_col_index][up_index] != 0)
+//                             {
+//                                 counter_square++;
+//                             }
+//                         }
+//                     }
+
+//                     if (counter_row == 1 || counter_col == 1 || counter_square == 1 )
+//                     {
+//                         sudoku_cell = solution[row_index][col_index][up_index];
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 // Check possibilities in each row.
 // If specific number is possible only in one box in row, write it to the box
