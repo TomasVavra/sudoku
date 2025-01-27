@@ -16,7 +16,7 @@ void delete_obsolete_possibilities (int (&solution)[9][9][10]);
 
 void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10]);
 
-void only_once_in_rows_columns_square (int (&solution)[9][9][10]);
+// void only_once_in_rows_columns_square (int (&solution)[9][9][10]);
 
 void check_rows (int (&solution)[9][9][10]);
 

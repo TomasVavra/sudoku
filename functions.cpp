@@ -187,7 +187,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 // }
 
 // Check possibilities in each row.
-// If specific number is possible only in one box in row, write it to the box
+// If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
 void check_rows (int (&solution)[9][9][10])
 {
     for (int up_index = 1; up_index <= 9; up_index++)
@@ -215,6 +215,8 @@ void check_rows (int (&solution)[9][9][10])
     }
 }
 
+// Check possibilities in each column.
+// If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
 void check_cols (int (&solution)[9][9][10])
 {
     for (int up_index = 1; up_index <= 9; up_index++)
@@ -241,6 +243,8 @@ void check_cols (int (&solution)[9][9][10])
     }
 }
 
+// Check possibilities in each 3x3 square.
+// If specific number is possible only in one sudoku cell in 3x3 square, write it to the sudoku cell
 void check_squares (int (&solution)[9][9][10])
 {
     for (int up_index = 1; up_index <= 9; up_index++)
