@@ -1,3 +1,7 @@
 # Ignore .vscode directory
 .vscode/
+
 .git/
+
+#exe file
+sudoku
