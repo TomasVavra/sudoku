@@ -2,9 +2,9 @@
 
 
 
-void read (const int (&instructions)[9][9], int (&solution)[9][9][10]);
+void copy_2D_to_3d (const int (&instructions)[9][9], int (&solution)[9][9][10]);
 
-void write (int (&solution)[9][9][10]);
+void print (int (&solution)[9][9][10]);
 
 bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10]);
 

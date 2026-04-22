@@ -28,14 +28,14 @@ const int instructions[9][9] = {
 //     {9,2,8,0,0,0,0,0,0}
 //     };
 
-int solution[9][9][10];
-int last_solution[9][9][10];
+int solution[9][9][10] = {};
+int last_solution[9][9][10] = {};
 
-read (instructions, solution);
-write (solution);
+copy_2D_to_3d (instructions, solution);
+print (solution);
 
-std::cout << "**********************" << std::endl;
-std::cout << std::endl;
+std::cout << std::string(111, '*') << "\n";
+std::cout << "\n";
 
 while (! are_solutions_identical(solution, last_solution))
 {
@@ -65,12 +65,12 @@ while (! are_solutions_identical(solution, last_solution))
     check_if_only_1_cell_solution_exists (solution);
     delete_obsolete_possibilities (solution);
     
-    write (solution);
+    print (solution);
     
 }
 
 
-std::cout << "is solution valid: " << is_solution_valid (solution) << std::endl;
+std::cout << "is solution valid: " << is_solution_valid (solution) << "\n";
 
 return 0;
 }

@@ -3,8 +3,10 @@
 
 const int INVALID_VALUE = -1;
 
-// Reads sudoku instruction, each sudoku cell contains all possible solutions for given cell
-void read (const int (&instructions)[9][9], int (&solution)[9][9][10])
+// Copy sudoku 2D instruction to 3D solution array
+// 1st dimension - row index, 2nd dimension - column index, 3rd dimension - possible solutions for given cell (0-9, where 0 is the solution for given cell)
+// If there is solution for given cell, it is written in 0 index of 3rd dimension and all other possibilities are deleted (set to 0).
+void copy_2D_to_3d (const int (&instructions)[9][9], int (&solution)[9][9][10])
 {
     for (int row_index = 0; row_index < 9; row_index++) 
     {
@@ -12,7 +14,7 @@ void read (const int (&instructions)[9][9], int (&solution)[9][9][10])
         {
             solution[row_index][col_index][0] = instructions[row_index][col_index];
 
-            for (int up_index = 1; up_index <= 9; up_index++) 
+            for (int up_index = 1; up_index < 10; up_index++) 
             {
                 if (solution[row_index][col_index][0] == 0)
                 {
@@ -27,45 +29,33 @@ void read (const int (&instructions)[9][9], int (&solution)[9][9][10])
     }
 }
 
-// write sudoku grid with all possible solutions for each cell
-void write (int (&solution)[9][9][10])
+// print sudoku grid with possible solutions for each cell
+void print (int (&solution)[9][9][10])
 {
     for (int row_index = 0; row_index < 9; row_index++) 
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            for (int up_index = 0; up_index <= 9; up_index++) 
+            for (int up_index = 0; up_index < 10; up_index++) 
             {
                 std::cout << solution[row_index][col_index][up_index];
-                if (up_index == 0) {std::cout << "*";}
+                if (up_index == 0) {std::cout << "#";}
             }
             std::cout << " ";
-            if (col_index == 2 || col_index == 5) {std::cout << "  ";}
+            if (col_index == 2 || col_index == 5) {std::cout << "| ";}
         }
-        std::cout << std::endl;
-        if (row_index == 2 || row_index == 5) {std::cout << std::endl;}
+        std::cout << "\n";
+        if (row_index == 2 || row_index == 5) {std::cout << std::string(111, '-') << "\n";}
     }
-    std::cout << std::endl << std::endl << std::endl;
+    std::cout << "\n\n";
 }
 
 // compare 2 solutions
 bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10])
 {
-    for (int row_index = 0; row_index < 9; row_index++) 
-    {
-        for (int col_index = 0; col_index < 9; col_index++) 
-        {
-            for (int up_index = 0; up_index <= 9; up_index++)
-            {
-                if (solution1[row_index][col_index][up_index] != solution2[row_index][col_index][up_index])
-                {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
+    return std::equal(&solution1[0][0][0], &solution1[0][0][0] + 9*9*10, &solution2[0][0][0]);
 }
+
 
 // copy 1st sulution into the 2nd solution
 void copy_1st_solution_to_2nd(const int (&solution)[9][9][10], int (&solution_copy)[9][9][10])
@@ -74,7 +64,7 @@ void copy_1st_solution_to_2nd(const int (&solution)[9][9][10], int (&solution_co
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            for (int up_index = 0; up_index <= 9; up_index++)
+            for (int up_index = 0; up_index < 10; up_index++)
             {
                 solution_copy[row_index][col_index][up_index] = solution[row_index][col_index][up_index];
             }
@@ -120,7 +110,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
         {
             int& sudoku_cell = solution[row_index][col_index][0];
             int number_of_solutions = 0;
-            for (int up_index = 1; up_index <= 9; up_index++) 
+            for (int up_index = 1; up_index < 10; up_index++) 
             {
                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
                 {
@@ -147,7 +137,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 //         for (int col_index = 0; col_index < 9; col_index++) 
 //         {
 //             int& sudoku_cell = solution[row_index][col_index][0];
-//             for (int up_index = 1; up_index <= 9; up_index++) 
+//             for (int up_index = 1; up_index < 10; up_index++) 
 //             {
 //                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
 //                 {
@@ -190,7 +180,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
 void check_rows (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index <= 9; up_index++)
+    for (int up_index = 1; up_index < 10; up_index++)
     {
         
         for (int row_index = 0; row_index < 9; row_index++) 
@@ -219,7 +209,7 @@ void check_rows (int (&solution)[9][9][10])
 // If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
 void check_cols (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index <= 9; up_index++)
+    for (int up_index = 1; up_index < 10; up_index++)
     {      
         for (int col_index = 0; col_index < 9; col_index++) 
         {
@@ -247,7 +237,7 @@ void check_cols (int (&solution)[9][9][10])
 // If specific number is possible only in one sudoku cell in 3x3 square, write it to the sudoku cell
 void check_squares (int (&solution)[9][9][10])
 {
-    for (int up_index = 1; up_index <= 9; up_index++)
+    for (int up_index = 1; up_index < 10; up_index++)
     {
         for (int chose_square_3x3_row_index = 0; chose_square_3x3_row_index < 3; chose_square_3x3_row_index++)
         {
@@ -287,7 +277,7 @@ void delete_obsolete_possibilities (int (&solution)[9][9][10])
         for (int col_index = 0; col_index < 9; col_index++) 
         {
             int& sudoku_cell = solution[row_index][col_index][0];
-            for (int up_index = 1; up_index <= 9; up_index++) 
+            for (int up_index = 1; up_index < 10; up_index++) 
             {
                 if (sudoku_cell != 0)
                 {
@@ -314,12 +304,12 @@ bool is_solution_valid (const int (&solution)[9][9][10])
 
         if (sum_row != 45)
         {
-            std::cout << "error in row " << row_index << std::endl;
+            std::cout << "error in row " << row_index << "\n";
             return false;
         }
         if (sum_column != 45)
         {
-            std::cout << "error in column " << row_index << std::endl;
+            std::cout << "error in column " << row_index << "\n";
             return false;
         }
     }
@@ -339,7 +329,7 @@ bool is_solution_valid (const int (&solution)[9][9][10])
             }
             if (sum_square != 45)
             {
-                std::cout << "error in 3x3 square " << chose_square_3x3_row_index << " x " << chose_square_3x3_col_index << std::endl;
+                std::cout << "error in 3x3 square " << chose_square_3x3_row_index << " x " << chose_square_3x3_col_index << "\n";
                 return false;
             }
         }    
