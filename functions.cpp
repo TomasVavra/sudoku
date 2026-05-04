@@ -53,6 +53,7 @@ void print (int (&solution)[9][9][10])
 // compare 2 solutions
 bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10])
 {
+    // std::equal(pointer to the first element of the first array, pointer to the last element of the first array, pointer to the first element of the second array)
     return std::equal(&solution1[0][0][0], &solution1[0][0][0] + 9*9*10, &solution2[0][0][0]);
 }
 
