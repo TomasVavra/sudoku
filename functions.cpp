@@ -6,7 +6,7 @@ const int INVALID_VALUE = -1;
 
 // Copy sudoku 2D instruction to 3D solution grid
 // If there is solution for given cell all other possibilities are deleted (set to false).
-void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid &solution) {
+void copy_2D_to_3d (const std::array<std::array<int, 9>, 9> &instructions, Grid &solution) {
     for (int row=0; row<9; row++) {
         for (int col=0; col<9; col++) {
             solution.cells[row][col].value = instructions[row][col];
@@ -20,8 +20,7 @@ void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid 
 }
 
 // print sudoku grid with possible solutions for each cell
-void print (const Grid &solution)
-{
+void print (const Grid &solution) {
     for (int row = 0; row < 9; row++) 
     {
         for (int col = 0; col < 9; col++) 
@@ -51,49 +50,27 @@ void print (const Grid &solution)
     std::cout << "\n\n";
 }
 
-// compare 2 solutions
-bool are_solutions_identical(const Grid &solution1, const Grid &solution2)
-{
-    return solution1 == solution2;
-}
-
-
-// copy 1st sulution into the 2nd solution
-void copy_1st_solution_to_2nd(const int (&solution)[9][9][10], int (&solution_copy)[9][9][10])
-{
-    for (int row_index = 0; row_index < 9; row_index++) 
+// If there is solved cell, this number can not be again in row, column or 3x3 square
+// Delete all possibilities for solved cell in the same row, column and 3x3 square
+void delete_possibilities_in_row_col_square (Grid &solution) {
+    for (int row = 0; row < 9; row++) 
     {
-        for (int col_index = 0; col_index < 9; col_index++) 
+        for (int col = 0; col < 9; col++) 
         {
-            for (int up_index = 0; up_index < 10; up_index++)
-            {
-                solution_copy[row_index][col_index][up_index] = solution[row_index][col_index][up_index];
-            }
-        }
-    }
-}
-
-// If there is solved cell, this function deletes the number from all possibilities in row, column and 3x3 square
-void delete_possibilities_in_row_col_square (int (&solution)[9][9][10])
-{
-    for (int row_index = 0; row_index < 9; row_index++) 
-    {
-        for (int col_index = 0; col_index < 9; col_index++) 
-        {
-            int& sudoku_cell = solution[row_index][col_index][0];
-            if (sudoku_cell != 0)                                // for solved cells
+            std::uint8_t &sudoku_cell = solution.cells[row][col].value;
+            if (sudoku_cell != 0)                                // for solved cells only
             {
                 for (int solved_cell_index = 0; solved_cell_index < 9; solved_cell_index++)
                 {
-                    solution[row_index][solved_cell_index][sudoku_cell] = 0;     // delete the number from solved cell in row
-                    solution[solved_cell_index][col_index][sudoku_cell] = 0;     // delete the number from solved cell in column
+                    solution.cells[row][solved_cell_index].setCandidate(sudoku_cell, false); // delete the number from solved cell in row
+                    solution.cells[solved_cell_index][col].setCandidate(sudoku_cell, false); // delete the number from solved cell in column
                 }
                 // delete the number in 3x3 square
-                for (int square_3x3_row_index = 0; square_3x3_row_index < 3; square_3x3_row_index++)
+                for (int square_3x3_row = 0; square_3x3_row < 3; square_3x3_row++)
                 {
-                    for (int square_3x3_col_index = 0; square_3x3_col_index < 3; square_3x3_col_index++)
+                    for (int square_3x3_col = 0; square_3x3_col < 3; square_3x3_col++)
                     {
-                        solution[(row_index/3)*3 + square_3x3_row_index][(col_index/3)*3 + square_3x3_col_index][sudoku_cell] = 0;
+                        solution.cells[(row/3)*3 + square_3x3_row][(col/3)*3 + square_3x3_col].setCandidate(sudoku_cell, false);
                     }
                 }
             }
@@ -109,7 +86,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            int& sudoku_cell = solution[row_index][col_index][0];
+            int &sudoku_cell = solution[row_index][col_index][0];
             int number_of_solutions = 0;
             for (int up_index = 1; up_index < 10; up_index++) 
             {
@@ -137,7 +114,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 //     {
 //         for (int col_index = 0; col_index < 9; col_index++) 
 //         {
-//             int& sudoku_cell = solution[row_index][col_index][0];
+//             int &sudoku_cell = solution[row_index][col_index][0];
 //             for (int up_index = 1; up_index < 10; up_index++) 
 //             {
 //                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
@@ -277,7 +254,7 @@ void delete_obsolete_possibilities (int (&solution)[9][9][10])
     {
         for (int col_index = 0; col_index < 9; col_index++) 
         {
-            int& sudoku_cell = solution[row_index][col_index][0];
+            int &sudoku_cell = solution[row_index][col_index][0];
             for (int up_index = 1; up_index < 10; up_index++) 
             {
                 if (sudoku_cell != 0)

@@ -5,10 +5,6 @@ void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid 
 
 void print (const Grid &solution);
 
-bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10]);
-
-void copy_1st_solution_to_2nd(const int (&solution)[9][9][10], int (&solution_copy)[9][9][10]);
-
 void delete_possibilities_in_row_col_square (int (&solution)[9][9][10]);
 
 void delete_obsolete_possibilities (int (&solution)[9][9][10]);

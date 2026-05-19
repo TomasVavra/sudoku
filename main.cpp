@@ -38,9 +38,8 @@ print (solution);
 std::cout << std::string(111, '*') << "\n";
 std::cout << "\n";
 
-// while (! are_solutions_identical(solution, last_solution))
-// {
-//     copy_1st_solution_to_2nd(solution, last_solution);
+while (solution != last_solution) {
+    last_solution = solution;
 
 //     delete_possibilities_in_row_col_square (solution);
 //     delete_obsolete_possibilities (solution);
@@ -68,7 +67,7 @@ std::cout << "\n";
     
 //     print (solution);
     
-// }
+}
 
 
 // std::cout << "is solution valid: " << is_solution_valid (solution) << "\n";
