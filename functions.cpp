@@ -4,48 +4,57 @@
 
 const int INVALID_VALUE = -1;
 
-// Copy sudoku 2D instruction to 3D solution array
-// 1st dimension - row index, 2nd dimension - column index, 3rd dimension - possible solutions for given cell (0-9, where 0 is the solution for given cell)
-// If there is solution for given cell, it is written in 0 index of 3rd dimension and all other possibilities are deleted (set to 0).
+// Copy sudoku 2D instruction to 3D solution grid
+// If there is solution for given cell all other possibilities are deleted (set to false).
 void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid &solution) {
-    for (int i=0; i<9; i++) {
-        for (int j=0; j<9; j++) {
-            solution.cells[i][j].value = instructions[i][j];
-            if (instructions[i][j] == 0) {
-                solution.cells[i][j].possibilities.fill(true);
+    for (int row=0; row<9; row++) {
+        for (int col=0; col<9; col++) {
+            solution.cells[row][col].value = instructions[row][col];
+            if (instructions[row][col] == 0) {
+                solution.cells[row][col].possibilities.fill(true);
             } else {
-                solution.cells[i][j].possibilities.fill(false); // delete all possibilities for solved cell
+                solution.cells[row][col].possibilities.fill(false); // delete all possibilities for solved cell
             }
         }
     }
 }
 
 // print sudoku grid with possible solutions for each cell
-void print (int (&solution)[9][9][10])
+void print (const Grid &solution)
 {
-    for (int row_index = 0; row_index < 9; row_index++) 
+    for (int row = 0; row < 9; row++) 
     {
-        for (int col_index = 0; col_index < 9; col_index++) 
+        for (int col = 0; col < 9; col++) 
         {
-            for (int up_index = 0; up_index < 10; up_index++) 
+            std::cout << solution.cells[row][col].value << "*";
+            
+            for (int candidate = 1; candidate <= 9; candidate++) 
             {
-                std::cout << solution[row_index][col_index][up_index];
-                if (up_index == 0) {std::cout << "#";}
+                if (solution.cells[row][col].getCandidate(candidate))
+                {
+                    std::cout << candidate;
+                } else {
+                    std::cout << " ";
+                }
             }
             std::cout << " ";
-            if (col_index == 2 || col_index == 5) {std::cout << "| ";}
+
+            if (col == 2 || col == 5) {
+                std::cout << "| ";  // 3 columns separator
+            }
         }
         std::cout << "\n";
-        if (row_index == 2 || row_index == 5) {std::cout << std::string(111, '-') << "\n";}
+        if (row == 2 || row == 5) {
+            std::cout << std::string(111, '-') << "\n";  // 3 rows separator
+        }
     }
     std::cout << "\n\n";
 }
 
 // compare 2 solutions
-bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10])
+bool are_solutions_identical(const Grid &solution1, const Grid &solution2)
 {
-    // std::equal(pointer to the first element of the first array, pointer to the last element of the first array, pointer to the first element of the second array)
-    return std::equal(&solution1[0][0][0], &solution1[0][0][0] + 9*9*10, &solution2[0][0][0]);
+    return solution1 == solution2;
 }
 
 

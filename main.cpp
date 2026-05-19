@@ -31,11 +31,12 @@ const std::array<std::array<int,9>,9> instructions = {{
 Grid solution;
 Grid last_solution;
 
-// copy_2D_to_3d (instructions, solution);
-// print (solution);
+copy_2D_to_3d (instructions, solution);
 
-// std::cout << std::string(111, '*') << "\n";
-// std::cout << "\n";
+print (solution);
+
+std::cout << std::string(111, '*') << "\n";
+std::cout << "\n";
 
 // while (! are_solutions_identical(solution, last_solution))
 // {
