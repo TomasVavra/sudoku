@@ -1,29 +1,20 @@
 # include <iostream>
 # include <fstream>
+#include "functions.hpp"
 
 const int INVALID_VALUE = -1;
 
 // Copy sudoku 2D instruction to 3D solution array
 // 1st dimension - row index, 2nd dimension - column index, 3rd dimension - possible solutions for given cell (0-9, where 0 is the solution for given cell)
 // If there is solution for given cell, it is written in 0 index of 3rd dimension and all other possibilities are deleted (set to 0).
-void copy_2D_to_3d (const int (&instructions)[9][9], int (&solution)[9][9][10])
-{
-    for (int row_index = 0; row_index < 9; row_index++) 
-    {
-        for (int col_index = 0; col_index < 9; col_index++) 
-        {
-            solution[row_index][col_index][0] = instructions[row_index][col_index];
-
-            for (int up_index = 1; up_index < 10; up_index++) 
-            {
-                if (solution[row_index][col_index][0] == 0)
-                {
-                    solution[row_index][col_index][up_index] = up_index;    // all possible solutions for sudoku cell
-                }
-                else 
-                {
-                    solution[row_index][col_index][up_index] = 0;
-                }
+void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid &solution) {
+    for (int i=0; i<9; i++) {
+        for (int j=0; j<9; j++) {
+            solution.cells[i][j].value = instructions[i][j];
+            if (instructions[i][j] == 0) {
+                solution.cells[i][j].possibilities.fill(true);
+            } else {
+                solution.cells[i][j].possibilities.fill(false); // delete all possibilities for solved cell
             }
         }
     }

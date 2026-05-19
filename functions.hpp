@@ -1,10 +1,9 @@
 # pragma once
+#include "Grid.hpp"
 
+void copy_2D_to_3d (const std::array<std::array<int, 9>, 9>& instructions, Grid &solution);
 
-
-void copy_2D_to_3d (const int (&instructions)[9][9], int (&solution)[9][9][10]);
-
-void print (int (&solution)[9][9][10]);
+void print (const Grid &solution);
 
 bool are_solutions_identical(const int (&solution1)[9][9][10], const int (&solution2)[9][9][10]);
 
