@@ -62,10 +62,10 @@ void delete_possibilities_in_row_col_square (Grid &solution) {
             {
                 for (int solved_cell_index = 0; solved_cell_index < 9; solved_cell_index++)
                 {
-                    solution.cells[row][solved_cell_index].setCandidate(sudoku_cell, false); // delete the number from solved cell in row
-                    solution.cells[solved_cell_index][col].setCandidate(sudoku_cell, false); // delete the number from solved cell in column
+                    solution.cells[row][solved_cell_index].setCandidate(sudoku_cell, false); // delete the number from solved cell from all possibilities in row
+                    solution.cells[solved_cell_index][col].setCandidate(sudoku_cell, false); // delete the number from solved cell from all possibilities in column
                 }
-                // delete the number in 3x3 square
+                // delete the number from all possibilities in 3x3 square
                 for (int square_3x3_row = 0; square_3x3_row < 3; square_3x3_row++)
                 {
                     for (int square_3x3_col = 0; square_3x3_col < 3; square_3x3_col++)
