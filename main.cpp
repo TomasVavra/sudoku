@@ -33,14 +33,13 @@ Grid last_solution;
 
 copy_2D_to_3d (instructions, solution);
 
-// print (solution);
+print (solution);
 
 std::cout << std::string(111, '*') << "\n\n";
-std::cout << "ffffff";
-
-// print (last_solution);
+int number_of_loops = 0;
 
 while (solution != last_solution) {
+    number_of_loops ++;
     last_solution = solution;
 
     delete_possibilities_in_row_col_square (solution);
@@ -67,7 +66,8 @@ while (solution != last_solution) {
 //     check_if_only_1_cell_solution_exists (solution);
 //     delete_obsolete_possibilities (solution);
     
-    // print (solution);
+    print (solution);
+    std::cout << "number_of_loops " << number_of_loops << "\n";
     
 }
 

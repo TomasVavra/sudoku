@@ -25,7 +25,7 @@ void print (const Grid &solution) {
     {
         for (int col = 0; col < 9; col++) 
         {
-            std::cout << solution.cells[row][col].value << "*";
+            std::cout << (int)solution.cells[row][col].value << "*";
             
             for (int candidate = 1; candidate <= 9; candidate++) 
             {
@@ -247,20 +247,18 @@ void check_squares (int (&solution)[9][9][10])
     }
 }
 
-// Delete all possibilities for single cell, if solution is found
-void delete_obsolete_possibilities (int (&solution)[9][9][10])
+// Delete all possibilities for single cell, if solution was found
+// 
+void delete_obsolete_possibilities (Grid &solution)
 {
-    for (int row_index = 0; row_index < 9; row_index++) 
+    for (int row = 0; row < 9; row++) 
     {
-        for (int col_index = 0; col_index < 9; col_index++) 
+        for (int col = 0; col < 9; col++) 
         {
-            int &sudoku_cell = solution[row_index][col_index][0];
-            for (int up_index = 1; up_index < 10; up_index++) 
+            std::uint8_t &sudoku_cell = solution.cells[row][col].value;
+            if (sudoku_cell != 0)
             {
-                if (sudoku_cell != 0)
-                {
-                    solution[row_index][col_index][up_index] = 0; 
-                }
+                solution.cells[row][col].possibilities.fill(false);
             }
         }
     }
