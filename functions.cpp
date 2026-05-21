@@ -6,7 +6,8 @@ const int INVALID_VALUE = -1;
 
 // Copy sudoku 2D instruction to 3D solution grid
 // If there is solution for given cell all other possibilities are deleted (set to false).
-void copy_2D_to_3d (const std::array<std::array<int, 9>, 9> &instructions, Grid &solution) {
+void copy_2D_to_3d (const std::array<std::array<int, 9>, 9> &instructions, Grid &solution)
+{
     for (int row=0; row<9; row++) {
         for (int col=0; col<9; col++) {
             solution.cells[row][col].value = instructions[row][col];
@@ -20,7 +21,8 @@ void copy_2D_to_3d (const std::array<std::array<int, 9>, 9> &instructions, Grid 
 }
 
 // print sudoku grid with possible solutions for each cell
-void print (const Grid &solution) {
+void print (const Grid &solution)
+{
     for (int row = 0; row < 9; row++) 
     {
         for (int col = 0; col < 9; col++) 
@@ -52,25 +54,26 @@ void print (const Grid &solution) {
 
 // If there is solved cell, this number can not be again in row, column or 3x3 square
 // Delete all possibilities for solved cell in the same row, column and 3x3 square
-void delete_possibilities_in_row_col_square (Grid &solution) {
+void delete_possibilities_in_row_col_square (Grid &solution) 
+{
     for (int row = 0; row < 9; row++) 
     {
         for (int col = 0; col < 9; col++) 
         {
-            std::uint8_t &sudoku_cell = solution.cells[row][col].value;
-            if (sudoku_cell != 0)                                // for solved cells only
+            Cell &cell = solution.cells[row][col];
+            if (cell.value != 0)                                // for solved cells only
             {
                 for (int solved_cell_index = 0; solved_cell_index < 9; solved_cell_index++)
                 {
-                    solution.cells[row][solved_cell_index].setCandidate(sudoku_cell, false); // delete the number from solved cell from all possibilities in row
-                    solution.cells[solved_cell_index][col].setCandidate(sudoku_cell, false); // delete the number from solved cell from all possibilities in column
+                    solution.cells[row][solved_cell_index].setCandidate(cell.value, false); // delete the number from solved cell from all possibilities in row
+                    solution.cells[solved_cell_index][col].setCandidate(cell.value, false); // delete the number from solved cell from all possibilities in column
                 }
                 // delete the number from all possibilities in 3x3 square
                 for (int square_3x3_row = 0; square_3x3_row < 3; square_3x3_row++)
                 {
                     for (int square_3x3_col = 0; square_3x3_col < 3; square_3x3_col++)
                     {
-                        solution.cells[(row/3)*3 + square_3x3_row][(col/3)*3 + square_3x3_col].setCandidate(sudoku_cell, false);
+                        solution.cells[(row/3)*3 + square_3x3_row][(col/3)*3 + square_3x3_col].setCandidate(cell.value, false);
                     }
                 }
             }
@@ -79,26 +82,34 @@ void delete_possibilities_in_row_col_square (Grid &solution) {
 }
 
 // check if there is only one possible solution for single sudoku cell and write it to the cell
-void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
+void check_if_only_1_cell_solution_exists (Grid &solution)
 {
-    int winner = INVALID_VALUE;
-    for (int row_index = 0; row_index < 9; row_index++) 
+    for (int row = 0; row < 9; row++) 
     {
-        for (int col_index = 0; col_index < 9; col_index++) 
+        for (int col = 0; col < 9; col++) 
         {
-            int &sudoku_cell = solution[row_index][col_index][0];
-            int number_of_solutions = 0;
-            for (int up_index = 1; up_index < 10; up_index++) 
+            Cell &cell = solution.cells[row][col];
+            
+            // skip already solved cells
+            if (cell.value != 0)
             {
-                if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
+                continue;
+            }
+            
+            int number_of_solutions = 0;
+            int winner = 0;
+
+            for (int possibility = 1; possibility <= 9; possibility++) 
+            {
+                if (cell.getCandidate(possibility))
                 {
                     number_of_solutions++;
-                    winner = solution[row_index][col_index][up_index];
+                    winner = possibility;
                 }
             }
             if (number_of_solutions == 1)
             {
-                sudoku_cell = winner;
+                cell.value = winner;
             }
         }
     }
@@ -108,13 +119,13 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 // If the number is present in the row, column or square only once, it is the solution.
 // Even if there are more possibilities for given cell.
 
-// void only_once_in_rows_columns_square (int (&solution)[9][9][10])
+// void only_once_in_rows_columns_square (Grid &solution)
 // {
 //     for (int row_index = 0; row_index < 9; row_index++) 
 //     {
 //         for (int col_index = 0; col_index < 9; col_index++) 
 //         {
-//             int &sudoku_cell = solution[row_index][col_index][0];
+//             std::uint8_t &sudoku_cell = solution.cells[row][col].value;
 //             for (int up_index = 1; up_index < 10; up_index++) 
 //             {
 //                 if ((solution[row_index][col_index][up_index] != 0) && (sudoku_cell == 0))
@@ -156,7 +167,7 @@ void check_if_only_1_cell_solution_exists (int (&solution)[9][9][10])
 
 // Check possibilities in each row.
 // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
-void check_rows (int (&solution)[9][9][10])
+void check_rows (Grid &solution)
 {
     for (int up_index = 1; up_index < 10; up_index++)
     {
@@ -185,7 +196,7 @@ void check_rows (int (&solution)[9][9][10])
 
 // Check possibilities in each column.
 // If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
-void check_cols (int (&solution)[9][9][10])
+void check_cols (Grid &solution)
 {
     for (int up_index = 1; up_index < 10; up_index++)
     {      
@@ -213,7 +224,7 @@ void check_cols (int (&solution)[9][9][10])
 
 // Check possibilities in each 3x3 square.
 // If specific number is possible only in one sudoku cell in 3x3 square, write it to the sudoku cell
-void check_squares (int (&solution)[9][9][10])
+void check_squares (Grid &solution)
 {
     for (int up_index = 1; up_index < 10; up_index++)
     {
@@ -248,7 +259,6 @@ void check_squares (int (&solution)[9][9][10])
 }
 
 // Delete all possibilities for single cell, if solution was found
-// 
 void delete_obsolete_possibilities (Grid &solution)
 {
     for (int row = 0; row < 9; row++) 
@@ -265,7 +275,7 @@ void delete_obsolete_possibilities (Grid &solution)
 }
 
 // check if the solution comply with sudoku rules
-bool is_solution_valid (const int (&solution)[9][9][10])
+bool is_solution_valid (const Grid &solution)
 {
     // check rows and columns
     for (int row_index = 0; row_index < 9; row_index++) 
