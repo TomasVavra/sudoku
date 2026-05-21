@@ -167,56 +167,78 @@ void check_if_only_1_cell_solution_exists (Grid &solution)
 
 // Check possibilities in each row.
 // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
-void check_rows (Grid &solution)
+void check_rows(Grid& solution)
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    // For each number 1–9
+    for (int possibility = 1; possibility <= 9; possibility++)
     {
-        
-        for (int row_index = 0; row_index < 9; row_index++) 
+        // For each row
+        for (int row = 0; row < 9; ++row)
         {
             int counter = 0;
-            int row_index_save = INVALID_VALUE;
-            int col_index_save = INVALID_VALUE;
-            for (int col_index = 0; col_index < 9; col_index++) 
+            int save_col = INVALID_VALUE;
+
+            // Scan all columns in this row
+            for (int col = 0; col < 9; ++col)
             {
-                if (solution[row_index][col_index][up_index] == up_index)
+                Cell& cell = solution.cells[row][col];
+
+                // Skip solved cells
+                if (cell.value != 0)
+                    continue;
+
+                // Check if this cell allows the possibility
+                if (cell.getCandidate(possibility))
                 {
-                    counter++;
-                    row_index_save = row_index;
-                    col_index_save = col_index;
-                } 
+                    ++counter;
+                    save_col = col;
+                }
             }
+
+            // If exactly one cell in the row can take possibility, assign it
             if (counter == 1)
-            {
-                solution[row_index_save][col_index_save][0] = up_index;
-            }
+                solution.cells[row][save_col].value = possibility;
         }
     }
 }
+
 
 // Check possibilities in each column.
 // If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
 void check_cols (Grid &solution)
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    // For each number 1–9
+    for (int possibility = 1; possibility <= 9; possibility++)
     {      
-        for (int col_index = 0; col_index < 9; col_index++) 
+        // For each column
+        for (int col = 0; col < 9; col++) 
         {
             int counter = 0;
-            int row_index_save = INVALID_VALUE;
-            int col_index_save = INVALID_VALUE;
-            for (int row_index = 0; row_index < 9; row_index++) 
+            int row_save = INVALID_VALUE;
+            
+            // Scan all rows in this column
+            for (int row = 0; row < 9; row++) 
             {
-                if (solution[row_index][col_index][up_index] == up_index)
+                Cell &cell = solution.cells[row][col];
+
+                // Skip solved cells
+                if (cell.value != 0)
+                {
+                    continue;
+                }
+                
+                // Check if this cell allows the possibility
+                if (cell.getCandidate(possibility))
                 {
                     counter++;
-                    row_index_save = row_index;
-                    col_index_save = col_index;
+                    row_save = row;
                 } 
             }
+            
+            // If exactly one cell in the column can take possibility, assign it
             if (counter == 1)
             {
-                solution[row_index_save][col_index_save][0] = up_index;
+                solution.cells[row_save][col].value = possibility;
             }
         }
     }
