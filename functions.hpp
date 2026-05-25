@@ -11,8 +11,6 @@ void delete_obsolete_possibilities (Grid &solution);
 
 void check_if_only_1_cell_solution_exists (Grid &solution);
 
-// void only_once_in_rows_columns_square (Grid &solution);
-
 void check_rows (Grid &solution);
 
 void check_cols (Grid &solution);

@@ -4,17 +4,17 @@
 
 int main () {
 
-const std::array<std::array<int,9>,9> instructions = {{
-    {0,1,0,6,0,0,9,0,0},
-    {0,0,0,0,3,0,0,0,1},
-    {9,0,8,1,7,4,5,0,0},
-    {0,0,1,8,0,0,0,7,4},
-    {0,0,0,0,0,0,0,0,0},
-    {5,6,0,0,0,7,1,0,0},
-    {0,0,9,7,4,6,8,0,5},
-    {6,0,0,0,9,0,0,0,0},
-    {0,0,7,0,0,2,0,3,0},
-}};
+// const std::array<std::array<int,9>,9> instructions = {{
+//     {0,1,0,6,0,0,9,0,0},
+//     {0,0,0,0,3,0,0,0,1},
+//     {9,0,8,1,7,4,5,0,0},
+//     {0,0,1,8,0,0,0,7,4},
+//     {0,0,0,0,0,0,0,0,0},
+//     {5,6,0,0,0,7,1,0,0},
+//     {0,0,9,7,4,6,8,0,5},
+//     {6,0,0,0,9,0,0,0,0},
+//     {0,0,7,0,0,2,0,3,0},
+// }};
 
 // const std::array<std::array<int,9>,9> instructions = {{
 //     {0,0,0,0,0,0,3,9,6},
@@ -28,6 +28,18 @@ const std::array<std::array<int,9>,9> instructions = {{
 //     {9,2,8,0,0,0,0,0,0}
 // }};
 
+const std::array<std::array<int,9>,9> instructions = {{
+    {9,0,0,0,6,3,0,5,0},
+    {0,0,2,0,0,1,0,9,0},
+    {0,0,4,9,0,0,7,0,1},
+    {0,0,6,0,1,0,0,8,0},
+    {0,0,0,3,0,6,0,0,0},
+    {0,1,0,0,8,0,9,0,0},
+    {7,0,9,0,0,5,8,0,0},
+    {0,4,0,8,0,0,2,0,0},
+    {0,3,0,1,4,0,0,0,9}
+}};
+
 Grid solution;
 Grid last_solution;
 
@@ -38,15 +50,13 @@ print (solution);
 std::cout << std::string(111, '*') << "\n\n";
 int number_of_loops = 0;
 
-while (solution != last_solution) {
+while (solution != last_solution)
+{
     number_of_loops ++;
     last_solution = solution;
 
     delete_possibilities_in_row_col_square (solution);
     delete_obsolete_possibilities (solution);
-
-    // only_once_in_rows_columns_square (solution);
-    // delete_obsolete_possibilities (solution);
     
     check_rows (solution);
     delete_obsolete_possibilities (solution);
