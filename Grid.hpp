@@ -7,12 +7,12 @@ struct Cell {
     std::array<bool, 9> possibilities{}; // true if the number is a possible solution for the cell
 
     // Get the candidate number n (1-9) for this cell
-    bool getCandidate(int n) const {
+    bool is_candidate_possible(int n) const {
         return possibilities[n - 1];
     }
 
     // Set the candidate number n (1-9) for this cell to true or false
-    void setCandidate(int n, bool b) {
+    void set_candidate(int n, bool b) {
         possibilities[n - 1] = b;
     }
 

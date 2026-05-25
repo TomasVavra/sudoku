@@ -10,11 +10,13 @@ void copy_2D_to_3d (const std::array<std::array<int, 9>, 9> &instructions, Grid 
 {
     for (int row=0; row<9; row++) {
         for (int col=0; col<9; col++) {
-            solution.cells[row][col].value = instructions[row][col];
+            Cell &cell = solution.cells[row][col];
+            cell.value = instructions[row][col];
+            
             if (instructions[row][col] == 0) {
-                solution.cells[row][col].possibilities.fill(true);
+                cell.possibilities.fill(true);
             } else {
-                solution.cells[row][col].possibilities.fill(false); // delete all possibilities for solved cell
+                cell.possibilities.fill(false); // delete all possibilities for solved cell
             }
         }
     }
@@ -27,11 +29,13 @@ void print (const Grid &solution)
     {
         for (int col = 0; col < 9; col++) 
         {
-            std::cout << (int)solution.cells[row][col].value << "*";
+            const Cell &cell = solution.cells[row][col];
+            
+            std::cout << (int)cell.value << "*";
             
             for (int candidate = 1; candidate <= 9; candidate++) 
             {
-                if (solution.cells[row][col].getCandidate(candidate))
+                if (cell.is_candidate_possible(candidate))
                 {
                     std::cout << candidate;
                 } else {
@@ -65,15 +69,15 @@ void delete_possibilities_in_row_col_square (Grid &solution)
             {
                 for (int solved_cell_index = 0; solved_cell_index < 9; solved_cell_index++)
                 {
-                    solution.cells[row][solved_cell_index].setCandidate(cell.value, false); // delete the number from solved cell from all possibilities in row
-                    solution.cells[solved_cell_index][col].setCandidate(cell.value, false); // delete the number from solved cell from all possibilities in column
+                    solution.cells[row][solved_cell_index].set_candidate(cell.value, false); // delete the number from solved cell from all possibilities in row
+                    solution.cells[solved_cell_index][col].set_candidate(cell.value, false); // delete the number from solved cell from all possibilities in column
                 }
-                // delete the number from all possibilities in 3x3 square
-                for (int square_3x3_row = 0; square_3x3_row < 3; square_3x3_row++)
+                // delete the number from all possibilities in 3x3 block
+                for (int block_row = 0; block_row < 3; block_row++)
                 {
-                    for (int square_3x3_col = 0; square_3x3_col < 3; square_3x3_col++)
+                    for (int block_col = 0; block_col < 3; block_col++)
                     {
-                        solution.cells[(row/3)*3 + square_3x3_row][(col/3)*3 + square_3x3_col].setCandidate(cell.value, false);
+                        solution.cells[(row/3)*3 + block_row][(col/3)*3 + block_col].set_candidate(cell.value, false);
                     }
                 }
             }
@@ -101,7 +105,7 @@ void check_if_only_1_cell_solution_exists (Grid &solution)
 
             for (int possibility = 1; possibility <= 9; possibility++) 
             {
-                if (cell.getCandidate(possibility))
+                if (cell.is_candidate_possible(possibility))
                 {
                     number_of_solutions++;
                     winner = possibility;
@@ -167,6 +171,7 @@ void check_if_only_1_cell_solution_exists (Grid &solution)
 
 // Check possibilities in each row.
 // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
+// Even if there are more possibilities for given cell
 void check_rows(Grid& solution)
 {
     // For each number 1–9
@@ -188,7 +193,7 @@ void check_rows(Grid& solution)
                     continue;
 
                 // Check if this cell allows the possibility
-                if (cell.getCandidate(possibility))
+                if (cell.is_candidate_possible(possibility))
                 {
                     ++counter;
                     save_col = col;
@@ -205,6 +210,7 @@ void check_rows(Grid& solution)
 
 // Check possibilities in each column.
 // If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
+// Even if there are more possibilities for given cell
 void check_cols (Grid &solution)
 {
     // For each number 1–9
@@ -228,7 +234,7 @@ void check_cols (Grid &solution)
                 }
                 
                 // Check if this cell allows the possibility
-                if (cell.getCandidate(possibility))
+                if (cell.is_candidate_possible(possibility))
                 {
                     counter++;
                     row_save = row;
@@ -244,36 +250,51 @@ void check_cols (Grid &solution)
     }
 }
 
-// Check possibilities in each 3x3 square.
-// If specific number is possible only in one sudoku cell in 3x3 square, write it to the sudoku cell
-void check_squares (Grid &solution)
+// Check possibilities in each 3x3 block.
+// If specific number is possible only in one sudoku cell in 3x3 block, write it to the sudoku cell
+// Even if there are more possibilities for given cell
+void check_blocks (Grid &solution)
 {
-    for (int up_index = 1; up_index < 10; up_index++)
+    for (int possibility = 1; possibility <= 9; possibility++)
     {
-        for (int chose_square_3x3_row_index = 0; chose_square_3x3_row_index < 3; chose_square_3x3_row_index++)
+        // Iterate over all 3x3 blocks
+        for (int block_row = 0; block_row < 3; block_row++)
         {
-            for (int chose_square_3x3_col_index = 0; chose_square_3x3_col_index < 3; chose_square_3x3_col_index++)
+            for (int block_col = 0; block_col < 3; block_col++)
             {
-                int counter = 0;
-                int row_index_save = INVALID_VALUE;
-                int col_index_save = INVALID_VALUE;
-                for (int inside_square_3x3_row_index = 0; inside_square_3x3_row_index < 3; inside_square_3x3_row_index++)
+                int counter = 0;    // number of cells in the 3x3 block that can take the possibility
+                int save_row = INVALID_VALUE;
+                int save_col = INVALID_VALUE;
+                
+                // iterate inside the 3×3 block
+                for (int inside_row = 0; inside_row < 3; inside_row++)
                 {
-                    for (int inside_square_3x3_col_index = 0; inside_square_3x3_col_index < 3; inside_square_3x3_col_index++)
+                    for (int inside_col = 0; inside_col < 3; inside_col++)
                     {
-                        int row = chose_square_3x3_row_index * 3 + inside_square_3x3_row_index;
-                        int col = chose_square_3x3_col_index * 3 + inside_square_3x3_col_index;
-                        if (solution[row][col][up_index] == up_index)
+                        int row = block_row * 3 + inside_row;
+                        int col = block_col * 3 + inside_col;
+                        Cell &cell = solution.cells[row][col];
+
+                        // Skip solved cells
+                        if (cell.value != 0)
+                        {
+                            continue;
+                        }
+
+                        // Check if this cell allows the possibility
+                        if (cell.is_candidate_possible(possibility))
                         {
                             counter++;
-                            row_index_save = row;
-                            col_index_save = col;
+                            save_row = row;
+                            save_col = col;
                         }
                     }
                 }
+                
+                // If exactly one cell in the 3x3 block can take possibility, assign it
                 if (counter == 1)
                 {
-                    solution[row_index_save][col_index_save][0] = up_index;
+                    solution.cells[save_row][save_col].value = possibility;
                 }
             }
         }
@@ -287,10 +308,10 @@ void delete_obsolete_possibilities (Grid &solution)
     {
         for (int col = 0; col < 9; col++) 
         {
-            std::uint8_t &sudoku_cell = solution.cells[row][col].value;
-            if (sudoku_cell != 0)
+            Cell &cell = solution.cells[row][col];
+            if (cell.value != 0)
             {
-                solution.cells[row][col].possibilities.fill(false);
+                cell.possibilities.fill(false);
             }
         }
     }
@@ -299,48 +320,71 @@ void delete_obsolete_possibilities (Grid &solution)
 // check if the solution comply with sudoku rules
 bool is_solution_valid (const Grid &solution)
 {
-    // check rows and columns
-    for (int row_index = 0; row_index < 9; row_index++) 
+    // check rows
+    for (int row_col = 0; row_col < 9; row_col++) 
     {
-        int sum_row = 0;
-        int sum_column = 0;
-        for (int col_index = 0; col_index < 9; col_index++) 
-        {
-            sum_row = sum_row + solution[row_index][col_index][0];
-            sum_column = sum_column + solution[col_index][row_index][0];       
-        }
+        // array of seen numbers
+        std::array<bool, 9> row_seen = {};  // all false
+        std::array<bool, 9> col_seen = {};  // all false
 
-        if (sum_row != 45)
+        for (int col_row = 0; col_row < 9; col_row++) 
         {
-            std::cout << "error in row " << row_index << "\n";
-            return false;
-        }
-        if (sum_column != 45)
-        {
-            std::cout << "error in column " << row_index << "\n";
-            return false;
+            // row check
+            const Cell &cell_row = solution.cells[row_col][col_row];
+
+            // value is not between 1 and 9
+            if (cell_row.value < 1 || cell_row.value > 9)
+                return false;
+            
+            // duplicate found
+            if (row_seen[cell_row.value - 1])
+                return false;
+
+            row_seen[cell_row.value - 1] = true;
+
+            // col check
+            const Cell &cell_col = solution.cells[col_row][row_col];
+
+            // value is not between 1 and 9
+            if (cell_col.value < 1 || cell_col.value > 9)
+                return false;
+            
+            // duplicate found
+            if (col_seen[cell_col.value - 1])
+                return false;
+
+            col_seen[cell_col.value - 1] = true;
         }
     }
     
-    // check 3x3 squares
-    for (int chose_square_3x3_row_index = 0; chose_square_3x3_row_index < 3; chose_square_3x3_row_index++)
+    // Iterate over all 3x3 blocks
+    for (int block_row = 0; block_row < 3; block_row++)
     {
-        for (int chose_square_3x3_col_index = 0; chose_square_3x3_col_index < 3; chose_square_3x3_col_index++)
+        for (int block_col = 0; block_col < 3; block_col++)
         {
-            int sum_square = 0;
-            for (int inside_square_3x3_row_index = 0; inside_square_3x3_row_index < 3; inside_square_3x3_row_index++)
+            std::array<bool, 9> seen = {};  // all false
+            
+            // iterate inside the 3×3 block
+            for (int inside_row = 0; inside_row < 3; inside_row++)
             {
-                for (int inside_square_3x3_col_index = 0; inside_square_3x3_col_index < 3; inside_square_3x3_col_index++)
-                    {
-                        sum_square = sum_square + solution[inside_square_3x3_row_index + 3*chose_square_3x3_row_index][inside_square_3x3_col_index + 3*chose_square_3x3_col_index][0];    // delete the number in square
-                    }
+                for (int inside_col = 0; inside_col < 3; inside_col++)
+                {
+                    int row = block_row * 3 + inside_row;
+                    int col = block_col * 3 + inside_col;
+                    const Cell &cell = solution.cells[row][col];
+                
+                    // value is not between 1 and 9
+                    if (cell.value < 1 || cell.value > 9)
+                        return false;
+                    
+                    // duplicate found
+                    if (seen[cell.value - 1])
+                        return false;
+
+                    seen[cell.value - 1] = true;
+                }
             }
-            if (sum_square != 45)
-            {
-                std::cout << "error in 3x3 square " << chose_square_3x3_row_index << " x " << chose_square_3x3_col_index << "\n";
-                return false;
-            }
-        }    
-    }    
+        }
+    }
     return true;
 }

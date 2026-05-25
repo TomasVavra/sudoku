@@ -43,36 +43,34 @@ while (solution != last_solution) {
     last_solution = solution;
 
     delete_possibilities_in_row_col_square (solution);
-//     delete_obsolete_possibilities (solution);
+    delete_obsolete_possibilities (solution);
 
-//     // only_once_in_rows_columns_square (solution);
-//     // delete_obsolete_possibilities (solution);
+    // only_once_in_rows_columns_square (solution);
+    // delete_obsolete_possibilities (solution);
     
-//     check_rows (solution);
-//     delete_obsolete_possibilities (solution);
+    check_rows (solution);
+    delete_obsolete_possibilities (solution);
     
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_obsolete_possibilities (solution);
+    delete_possibilities_in_row_col_square (solution);
+    delete_obsolete_possibilities (solution);
 
-//     check_cols (solution);
-//     delete_obsolete_possibilities (solution);
+    check_cols (solution);
+    delete_obsolete_possibilities (solution);
 
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_obsolete_possibilities (solution);
+    delete_possibilities_in_row_col_square (solution);
+    delete_obsolete_possibilities (solution);
 
-//     check_squares (solution);
-//     delete_obsolete_possibilities (solution);
+    check_blocks (solution);
+    delete_obsolete_possibilities (solution);
 
-//     check_if_only_1_cell_solution_exists (solution);
-//     delete_obsolete_possibilities (solution);
+    check_if_only_1_cell_solution_exists (solution);
+    delete_obsolete_possibilities (solution);
     
     print (solution);
-    std::cout << "number_of_loops " << number_of_loops << "\n";
-    
 }
 
-
-// std::cout << "is solution valid: " << is_solution_valid (solution) << "\n";
+std::cout << "number_of_loops " << number_of_loops << "\n";
+std::cout << "is solution valid: " << is_solution_valid (solution) << "\n";
 
 return 0;
 }
