@@ -272,8 +272,7 @@ bool number_in_9_cells(const Cell9& cell9, int n)
 {
     for (int i = 0; i < 9; i++)
     {
-        const Cell& cell = *cell9.cells[i];
-        if (cell.value == n)
+        if (cell9[i].value == n)
             return true;
     }
     return false;

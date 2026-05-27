@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <cstdint>
+#include <functional>
 
 // each cell has a value (0 if unsolved) and an array of possibilities (true if the number is still a possible solution for the cell)
 struct Cell 
@@ -10,29 +11,37 @@ struct Cell
 
 
     // true if the candidate number n (1-9) is still a possible solution for this cell
-    bool is_candidate_possible(int n) const {
+    bool is_candidate_possible(int n) const
+    {
         return possibilities[n - 1];
     }
 
     // Set the candidate number n (1-9) for this cell to true or false
-    void set_candidate(int n, bool b) {
+    void set_candidate(int n, bool b)
+    {
         possibilities[n - 1] = b;
     }
 
     auto operator<=>(const Cell&) const = default;
 };
 
-// row or column or 3x3 block of sudoku cells
-struct Cell9 
-{
-    std::array<Cell*, 9> cells{};
 
-    Cell& operator[] (int index) const
-    {
-        return *cells[index];
+// 9 cells in a row, column or block
+struct Cell9
+{
+    std::array<std::reference_wrapper<Cell>, 9> cells;
+
+    Cell& operator[](int index) {
+        return cells[index].get();
     }
+
+    const Cell& operator[](int index) const {
+        return cells[index].get();
+    }
+
     auto operator<=>(const Cell9&) const = default;
 };
+
 
 // whole sudoku grid
 struct Grid 
@@ -43,7 +52,9 @@ struct Grid
     {
         Cell9 out;
         for (int col = 0; col < 9; col++)
-            out.cells[col] = &cells[row][col];
+        {
+            out.cells[col] = cells[row][col];
+        }
         return out;
     }
 
@@ -51,7 +62,7 @@ struct Grid
     {
         Cell9 out;
         for (int row = 0; row < 9; row++)
-            out.cells[row] = &cells[row][col];
+            out.cells[row] = cells[row][col];
         return out;
     }
 
@@ -61,7 +72,7 @@ struct Grid
         int idx = 0;
         for (int inside_row = 0; inside_row < 3; inside_row++)
             for (int inside_col = 0; inside_col < 3; inside_col++)
-                out.cells[idx++] = &cells[block_row*3 + inside_row][block_col*3 + inside_col];
+                out.cells[idx++] = cells[block_row*3 + inside_row][block_col*3 + inside_col];
         return out;
     }
 
