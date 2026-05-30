@@ -50,42 +50,6 @@ print (solution);
 std::cout << std::string(111, '*') << "\n\n";
 int number_of_loops = 0;
 
-// while (solution != last_solution)
-// {
-//     number_of_loops ++;
-//     last_solution = solution;
-
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-    
-//     check_if_only_1_cell_solution_exists (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     check_rows (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     check_cols (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     check_blocks (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     delete_possibilities_in_row_col_square (solution);
-//     delete_possibilities_in_solved_cells (solution);
-
-//     print (solution);
-// }
-
 while (solution != last_solution)
 {
     number_of_loops ++;

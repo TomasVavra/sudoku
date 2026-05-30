@@ -81,23 +81,26 @@ void delete_possibilities_in_row_col_square (Grid &solution)
     {
         for (int col = 0; col < 9; col++) 
         {
+            // current cell
             Cell &cell = solution.cells[row][col];
-            if (cell.value != 0)                                // for solved cells only
-            {
-                for (int solved_cell_index = 0; solved_cell_index < 9; solved_cell_index++)
-                {
-                    solution.cells[row][solved_cell_index].set_candidate(cell.value, false); // delete the number from solved cell from all possibilities in row
-                    solution.cells[solved_cell_index][col].set_candidate(cell.value, false); // delete the number from solved cell from all possibilities in column
-                }
-                // delete the number from all possibilities in 3x3 block
-                for (int block_row = 0; block_row < 3; block_row++)
-                {
-                    for (int block_col = 0; block_col < 3; block_col++)
-                    {
-                        solution.cells[(row/3)*3 + block_row][(col/3)*3 + block_col].set_candidate(cell.value, false);
-                    }
-                }
-            }
+
+            if (cell.value == 0)    // skip solved cells
+                continue;
+            
+            // eliminate from current row
+            Cell9 row_view = solution.row_as_cell9(row);
+            for (int i = 0; i < 9; i++)
+                row_view[i].set_candidate(cell.value, false);
+
+            // eliminate from current column
+            Cell9 col_view = solution.col_as_cell9(col);
+            for (int i = 0; i < 9; i++)
+                col_view[i].set_candidate(cell.value, false);
+
+            // eliminate from current block
+            Cell9 block_view = solution.block_as_cell9(row / 3, col / 3);
+            for (int i = 0; i < 9; i++)
+                block_view[i].set_candidate(cell.value, false);
         }
     }
 }
@@ -136,138 +139,7 @@ void check_if_only_1_cell_solution_exists (Grid &solution)
     }
 }
 
-// // Check possibilities in each row.
-// // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
-// // Even if there are more possibilities for given cell
-// void check_rows(Grid& solution)
-// {
-//     // For each number 1–9
-//     for (int possibility = 1; possibility <= 9; possibility++)
-//     {
-//         // For each row
-//         for (int row = 0; row < 9; ++row)
-//         {
-//             int counter = 0;
-//             int save_col = INVALID_VALUE;
-
-//             // Scan all columns in this row
-//             for (int col = 0; col < 9; ++col)
-//             {
-//                 Cell& cell = solution.cells[row][col];
-
-//                 // Skip solved cells
-//                 if (cell.value != 0)
-//                     continue;
-
-//                 // Check if this cell allows the possibility
-//                 if (cell.is_candidate_possible(possibility))
-//                 {
-//                     ++counter;
-//                     save_col = col;
-//                 }
-//             }
-
-//             // If exactly one cell in the row can take possibility, assign it
-//             if (counter == 1)
-//                 solution.cells[row][save_col].value = possibility;
-//         }
-//     }
-// }
-
-
-// // Check possibilities in each column.
-// // If specific number is possible only in one sudoku cell in column, write it to the sudoku cell
-// // Even if there are more possibilities for given cell
-// void check_cols (Grid &solution)
-// {
-//     // For each number 1–9
-//     for (int possibility = 1; possibility <= 9; possibility++)
-//     {      
-//         // For each column
-//         for (int col = 0; col < 9; col++) 
-//         {
-//             int counter = 0;
-//             int row_save = INVALID_VALUE;
-            
-//             // Scan all rows in this column
-//             for (int row = 0; row < 9; row++) 
-//             {
-//                 Cell &cell = solution.cells[row][col];
-
-//                 // Skip solved cells
-//                 if (cell.value != 0)
-//                 {
-//                     continue;
-//                 }
-                
-//                 // Check if this cell allows the possibility
-//                 if (cell.is_candidate_possible(possibility))
-//                 {
-//                     counter++;
-//                     row_save = row;
-//                 } 
-//             }
-            
-//             // If exactly one cell in the column can take possibility, assign it
-//             if (counter == 1)
-//             {
-//                 solution.cells[row_save][col].value = possibility;
-//             }
-//         }
-//     }
-// }
-
-// // Check possibilities in each 3x3 block.
-// // If specific number is possible only in one sudoku cell in 3x3 block, write it to the sudoku cell
-// // Even if there are more possibilities for given cell
-// void check_blocks (Grid &solution)
-// {
-//     for (int possibility = 1; possibility <= 9; possibility++)
-//     {
-//         // Iterate over all 3x3 blocks
-//         for (int block_row = 0; block_row < 3; block_row++)
-//         {
-//             for (int block_col = 0; block_col < 3; block_col++)
-//             {
-//                 int counter = 0;    // number of cells in the 3x3 block that can take the possibility
-//                 int save_row = INVALID_VALUE;
-//                 int save_col = INVALID_VALUE;
-                
-//                 // iterate inside the 3×3 block
-//                 for (int inside_row = 0; inside_row < 3; inside_row++)
-//                 {
-//                     for (int inside_col = 0; inside_col < 3; inside_col++)
-//                     {
-//                         int row = block_row * 3 + inside_row;
-//                         int col = block_col * 3 + inside_col;
-//                         Cell &cell = solution.cells[row][col];
-
-//                         // Skip solved cells
-//                         if (cell.value != 0)
-//                         {
-//                             continue;
-//                         }
-
-//                         // Check if this cell allows the possibility
-//                         if (cell.is_candidate_possible(possibility))
-//                         {
-//                             counter++;
-//                             save_row = row;
-//                             save_col = col;
-//                         }
-//                     }
-//                 }
-                
-//                 // If exactly one cell in the 3x3 block can take possibility, assign it
-//                 if (counter == 1)
-//                 {
-//                     solution.cells[save_row][save_col].value = possibility;
-//                 }
-//             }
-//         }
-//     }
-// }
-
+// Check if specific number n is already in the 9 cells (row, column or block)
 bool number_in_9_cells(const Cell9& cell9, int n)
 {
     for (int i = 0; i < 9; i++)
@@ -278,7 +150,38 @@ bool number_in_9_cells(const Cell9& cell9, int n)
     return false;
 }
 
+// Check if specific number is possible only in one cell in the group of 9 cells (row, column or block)
+// If there is only one cell that can take the possibility, assign it to the cell
+// Even if there are more possibilities for given cell
+void check_cell9_group(Cell9& group, int possibility)
+{
+    // Skip if n already appears in this group
+    if (number_in_9_cells(group, possibility))
+        return;
 
+    int count = 0;
+    int last_i = INVALID_VALUE;
+
+    // Find all cells that can take the possibility
+    for (int i = 0; i < 9; i++)
+    {
+        const Cell& cell = group[i];
+        
+        // Skip solved cells
+        if (cell.value != 0)
+            continue;
+
+        if (cell.is_candidate_possible(possibility))
+        {
+            count++;
+            last_i = i;
+        }
+    }
+
+    // If exactly one cell in the row can take possibility, assign it
+    if (count == 1)
+        group[last_i].value = possibility;
+}
 
 // Check possibilities in each row.
 // If specific number is possible only in one sudoku cell in row, write it to the sudoku cell
@@ -289,30 +192,9 @@ void check_rows(Grid& solution)
     {
         for (int row = 0; row < 9; row++)
         {
-            // row of sudoku as Cell9 struct
-            Cell9 cell9 = solution.row_as_cell9(row);
-            
-            // Skip if n already appears in this row
-            if (number_in_9_cells(cell9, possibility))
-                continue;
-
-            int count = 0;
-            int last_col = INVALID_VALUE;
-
-            // Find all cells that can take the possibility
-            for (int col = 0; col < 9; col++)
-            {
-                const Cell& cell = cell9[col];
-                if (cell.value == 0 && cell.is_candidate_possible(possibility))
-                {
-                    count++;
-                    last_col = col;
-                }
-            }
-
-            // If exactly one cell in the row can take possibility, assign it
-            if (count == 1)
-                cell9[last_col].value = possibility;
+            // row as Cell9 view
+            Cell9 row_view = solution.row_as_cell9(row);
+            check_cell9_group(row_view, possibility);
         }
     }
 }
@@ -326,42 +208,13 @@ void check_cols(Grid& solution)
     {
         for (int col = 0; col < 9; col++)
         {
-            // 1) If this number is already in the column, skip it
-            bool already_in_col = false;
-            for (int row = 0; row < 9; row++)
-            {
-                Cell& cell = solution.cells[row][col];
-                if (cell.value == possibility)
-                {
-                    already_in_col = true;
-                    break;
-                }
-            }
-            if (already_in_col)
-                continue;
-
-            // 2) Standard uniqueness logic
-            int counter = 0;
-            int row_save = INVALID_VALUE;
-
-            for (int row = 0; row < 9; row++)
-            {
-                Cell& cell = solution.cells[row][col];
-                if (cell.value != 0)
-                    continue;
-
-                if (cell.is_candidate_possible(possibility))
-                {
-                    counter++;
-                    row_save = row;
-                }
-            }
-
-            if (counter == 1)
-                solution.cells[row_save][col].value = possibility;
+            // Column as Cell9 view
+            Cell9 col_view = solution.col_as_cell9(col);
+            check_cell9_group(col_view, possibility);
         }
     }
 }
+
 
 // Check possibilities in each 3x3 block.
 // If specific number is possible only in one sudoku cell in 3x3 block, write it to the sudoku cell
@@ -370,130 +223,60 @@ void check_blocks(Grid& solution)
 {
     for (int possibility = 1; possibility <= 9; possibility++)
     {
+        // Iterate over the 3×3 blocks
         for (int block_row = 0; block_row < 3; block_row++)
         {
             for (int block_col = 0; block_col < 3; block_col++)
             {
-                // 1) If this number is already in the block, skip it
-                bool already_in_block = false;
-                for (int inside_row = 0; inside_row < 3 && !already_in_block; inside_row++)
-                {
-                    for (int inside_col = 0; inside_col < 3; inside_col++)
-                    {
-                        int row = block_row * 3 + inside_row;
-                        int col = block_col * 3 + inside_col;
-                        Cell& cell = solution.cells[row][col];
-                        if (cell.value == possibility)
-                        {
-                            already_in_block = true;
-                            break;
-                        }
-                    }
-                }
-                if (already_in_block)
-                    continue;
-
-                // 2) Standard uniqueness logic
-                int counter = 0;
-                int save_row = INVALID_VALUE;
-                int save_col = INVALID_VALUE;
-
-                for (int inside_row = 0; inside_row < 3; inside_row++)
-                {
-                    for (int inside_col = 0; inside_col < 3; inside_col++)
-                    {
-                        int row = block_row * 3 + inside_row;
-                        int col = block_col * 3 + inside_col;
-                        Cell& cell = solution.cells[row][col];
-
-                        if (cell.value != 0)
-                            continue;
-
-                        if (cell.is_candidate_possible(possibility))
-                        {
-                            counter++;
-                            save_row = row;
-                            save_col = col;
-                        }
-                    }
-                }
-
-                if (counter == 1)
-                    solution.cells[save_row][save_col].value = possibility;
+                // Block as Cell9 view
+                Cell9 block_view = solution.block_as_cell9(block_row, block_col);
+                check_cell9_group(block_view, possibility);
             }
         }
     }
 }
 
+// Check if there are no duplicates and all values are between 1 and 9 in the group of 9 cells (row, column or block)
+bool is_group_valid(const ConstCell9& group)
+{
+    std::array<bool, 9> seen = {};  // all false
+
+    for (int i = 0; i < 9; i++)
+    {
+        int value = group[i].value;
+
+        // value is not between 1 and 9
+        if (value < 1 || value > 9)
+            return false;
+
+        // duplicate found
+        if (seen[value - 1])
+            return false;
+
+        seen[value - 1] = true;
+    }
+
+    return true;
+}
 
 // check if the solution comply with sudoku rules
-bool is_solution_valid (const Grid &solution)
+bool is_solution_valid(const Grid& solution)
 {
-    // check rows
-    for (int row_col = 0; row_col < 9; row_col++) 
-    {
-        // array of seen numbers
-        std::array<bool, 9> row_seen = {};  // all false
-        std::array<bool, 9> col_seen = {};  // all false
+    // Check rows
+    for (int row = 0; row < 9; row++)
+        if (!is_group_valid(solution.row_as_cell9(row)))
+            return false;
 
-        for (int col_row = 0; col_row < 9; col_row++) 
-        {
-            // row check
-            const Cell &cell_row = solution.cells[row_col][col_row];
+    // Check columns
+    for (int col = 0; col < 9; col++)
+        if (!is_group_valid(solution.col_as_cell9(col)))
+            return false;
 
-            // value is not between 1 and 9
-            if (cell_row.value < 1 || cell_row.value > 9)
-                return false;
-            
-            // duplicate found
-            if (row_seen[cell_row.value - 1])
-                return false;
-
-            row_seen[cell_row.value - 1] = true;
-
-            // col check
-            const Cell &cell_col = solution.cells[col_row][row_col];
-
-            // value is not between 1 and 9
-            if (cell_col.value < 1 || cell_col.value > 9)
-                return false;
-            
-            // duplicate found
-            if (col_seen[cell_col.value - 1])
-                return false;
-
-            col_seen[cell_col.value - 1] = true;
-        }
-    }
-    
-    // Iterate over all 3x3 blocks
+    // Check blocks
     for (int block_row = 0; block_row < 3; block_row++)
-    {
         for (int block_col = 0; block_col < 3; block_col++)
-        {
-            std::array<bool, 9> seen = {};  // all false
-            
-            // iterate inside the 3×3 block
-            for (int inside_row = 0; inside_row < 3; inside_row++)
-            {
-                for (int inside_col = 0; inside_col < 3; inside_col++)
-                {
-                    int row = block_row * 3 + inside_row;
-                    int col = block_col * 3 + inside_col;
-                    const Cell &cell = solution.cells[row][col];
-                
-                    // value is not between 1 and 9
-                    if (cell.value < 1 || cell.value > 9)
-                        return false;
-                    
-                    // duplicate found
-                    if (seen[cell.value - 1])
-                        return false;
+            if (!is_group_valid(solution.block_as_cell9(block_row, block_col)))
+                return false;
 
-                    seen[cell.value - 1] = true;
-                }
-            }
-        }
-    }
     return true;
 }
