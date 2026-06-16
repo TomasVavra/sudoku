@@ -54,44 +54,38 @@ struct ConstCell9
 
 
 // whole sudoku grid
-struct Grid 
-{
+struct Grid {
     std::array<std::array<Cell, 9>, 9> cells{};
 
-    Cell9 row_as_cell9(int row) 
-    {
+    Cell9 row_as_cell9(int row) {
         Cell9 out;
         for (int col = 0; col < 9; col++)
             out.cells[col] = &cells[row][col];
         return out;
     }
 
-    ConstCell9 row_as_cell9(int row) const
-    {
+    ConstCell9 row_as_cell9(int row) const {
         ConstCell9 out;
         for (int col = 0; col < 9; col++)
             out.cells[col] = &cells[row][col];
         return out;
     }
 
-    Cell9 col_as_cell9(int col) 
-    {
+    Cell9 col_as_cell9(int col) {
         Cell9 out;
         for (int row = 0; row < 9; row++)
             out.cells[row] = &cells[row][col];
         return out;
     }
 
-    ConstCell9 col_as_cell9(int col) const
-    {
+    ConstCell9 col_as_cell9(int col) const {
         ConstCell9 out;
         for (int row = 0; row < 9; row++)
             out.cells[row] = &cells[row][col];
         return out;
     }
 
-    Cell9 block_as_cell9(int block_row, int block_col) 
-    {
+    Cell9 block_as_cell9(int block_row, int block_col) {
         Cell9 out;
         int idx = 0;
         for (int inside_row = 0; inside_row < 3; inside_row++)
@@ -100,8 +94,7 @@ struct Grid
         return out;
     }
 
-    ConstCell9 block_as_cell9(int block_row, int block_col) const
-    {
+    ConstCell9 block_as_cell9(int block_row, int block_col) const {
         ConstCell9 out;
         int idx = 0;
         for (int inside_row = 0; inside_row < 3; inside_row++)

@@ -20,3 +20,5 @@ void check_cols (Grid &solution);
 void check_blocks (Grid &solution);
 
 bool is_solution_valid (const Grid &solution);
+
+void backpropagate(Grid& solution);

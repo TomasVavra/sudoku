@@ -2,9 +2,8 @@
 # include <array>
 # include "functions.hpp"
 
-int main () {
-
-// const std::array<std::array<int,9>,9> instructions = {{
+int main() {
+    // const std::array<std::array<int,9>,9> instructions = {{
 //     {0,1,0,6,0,0,9,0,0},
 //     {0,0,0,0,3,0,0,0,1},
 //     {9,0,8,1,7,4,5,0,0},
@@ -50,32 +49,37 @@ print (solution);
 std::cout << std::string(111, '*') << "\n\n";
 int number_of_loops = 0;
 
-while (solution != last_solution)
-{
-    number_of_loops ++;
-    last_solution = solution;
+while (!is_solution_valid(solution)) {
+    while (solution != last_solution) {
+            number_of_loops++;
+            last_solution = solution;
 
-    // Phase A: eliminate
-    delete_possibilities_in_row_col_square(solution);
-    delete_possibilities_in_solved_cells(solution);
+            // Phase A: eliminate
+            delete_possibilities_in_row_col_square(solution);
+            delete_possibilities_in_solved_cells(solution);
 
-    // Phase B: assign
-    check_if_only_1_cell_solution_exists(solution);
-    check_rows(solution);
-    check_cols(solution);
-    check_blocks(solution);
+            // Phase B: assign
+            check_if_only_1_cell_solution_exists(solution);
+            check_rows(solution);
+            check_cols(solution);
+            check_blocks(solution);
 
-    // Phase C: eliminate again
-    delete_possibilities_in_row_col_square(solution);
-    delete_possibilities_in_solved_cells(solution);
+            // Phase C: eliminate again
+            delete_possibilities_in_row_col_square(solution);
+            delete_possibilities_in_solved_cells(solution);
 
-    print(solution);
+            print(solution);
+        }
+
+    if (is_solution_valid(solution)) {
+        std::cout << "Solution found!\n";
+    } else{
+        backpropagate(solution);
+        last_solution = Grid();  // Reset to allow inner loop to run again
+    }
 }
 
-
-
 std::cout << "number_of_loops " << number_of_loops << "\n";
-std::cout << "is solution valid: " << is_solution_valid (solution) << "\n";
 
 return 0;
 }
