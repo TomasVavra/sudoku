@@ -1,5 +1,6 @@
 # include <iostream>
 # include <fstream>
+#include "Grid.hpp" 
 #include "functions.hpp"
 
 const int INVALID_VALUE = -1;
@@ -259,10 +260,10 @@ bool is_solution_valid(const Grid& solution) {
     return true;
 }
 
-void backpropagate(Grid& solution) {
-    for (int row=0; row<9; row++)
+void backpropagate(Grid& backpropagation_solution, Grid& solution) {
+    for (int row = 0; row < 9; row++)
     {
-        for (int col=0; col<9; col++)
+        for (int col = 0; col < 9; col++)
         {
             Cell &cell = solution.cells[row][col];
         
@@ -280,14 +281,12 @@ void backpropagate(Grid& solution) {
                 if (cell.is_candidate_possible(possibility))
                 {
                 number_of_solutions++;
-                last_possibility = possibility;
                 }
             }
 
-            if (number_of_solutions == 2)
+            if (number_of_solutions < lowest_number_of_solutions) 
             {
-                cell.value = last_possibility;
-                return;
+                lowest_number_of_solutions = number_of_solutions;
             }
         }
     }
