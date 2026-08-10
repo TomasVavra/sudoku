@@ -261,6 +261,8 @@ bool is_solution_valid(const Grid& solution) {
 }
 
 void backpropagate(Grid& backpropagation_solution, Grid& solution) {
+    int lowest_number_of_solutions = 10;  // Initialize to a value higher than any possible number of solutions
+
     for (int row = 0; row < 9; row++)
     {
         for (int col = 0; col < 9; col++)
@@ -274,8 +276,6 @@ void backpropagate(Grid& backpropagation_solution, Grid& solution) {
             }
 
             int number_of_solutions = 0;
-            int last_possibility = 0;
-
             for (int possibility = 1; possibility <= 9; possibility++) 
             {
                 if (cell.is_candidate_possible(possibility))

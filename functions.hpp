@@ -21,4 +21,4 @@ void check_blocks (Grid &solution);
 
 bool is_solution_valid (const Grid &solution);
 
-void backpropagate(Grid& solution);
+void backpropagate(Grid& backpropagation_solution, Grid& solution);

@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <cstdint>
-#include <functional>
+#include <compare>
 
 // each cell has a value (0 if unsolved) and an array of possibilities (true if the number is still a possible solution for the cell)
 struct Cell 
@@ -38,18 +38,16 @@ struct Cell9
     {
         return *cells[index];
     }
-    auto operator<=>(const Cell9&) const = default;
 };
 
 struct ConstCell9
 {
-    std::array<const Cell*, 9> cells;
+    std::array<const Cell*, 9> cells{};
 
     const Cell& operator[](int index) const
     {
         return *cells[index];
     }
-    auto operator<=>(const ConstCell9&) const = default;
 };
 
 

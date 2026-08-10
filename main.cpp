@@ -3,17 +3,17 @@
 # include "functions.hpp"
 
 int main() {
-    // const std::array<std::array<int,9>,9> instructions = {{
-//     {0,1,0,6,0,0,9,0,0},
-//     {0,0,0,0,3,0,0,0,1},
-//     {9,0,8,1,7,4,5,0,0},
-//     {0,0,1,8,0,0,0,7,4},
-//     {0,0,0,0,0,0,0,0,0},
-//     {5,6,0,0,0,7,1,0,0},
-//     {0,0,9,7,4,6,8,0,5},
-//     {6,0,0,0,9,0,0,0,0},
-//     {0,0,7,0,0,2,0,3,0},
-// }};
+    const std::array<std::array<int,9>,9> instructions = {{
+    {0,1,0,6,0,0,9,0,0},
+    {0,0,0,0,3,0,0,0,1},
+    {9,0,8,1,7,4,5,0,0},
+    {0,0,1,8,0,0,0,7,4},
+    {0,0,0,0,0,0,0,0,0},
+    {5,6,0,0,0,7,1,0,0},
+    {0,0,9,7,4,6,8,0,5},
+    {6,0,0,0,9,0,0,0,0},
+    {0,0,7,0,0,2,0,3,0},
+}};
 
 // const std::array<std::array<int,9>,9> instructions = {{
 //     {0,0,0,0,0,0,3,9,6},
@@ -27,19 +27,20 @@ int main() {
 //     {9,2,8,0,0,0,0,0,0}
 // }};
 
-const std::array<std::array<int,9>,9> instructions = {{
-    {9,0,0,0,6,3,0,5,0},
-    {0,0,2,0,0,1,0,9,0},
-    {0,0,4,9,0,0,7,0,1},
-    {0,0,6,0,1,0,0,8,0},
-    {0,0,0,3,0,6,0,0,0},
-    {0,1,0,0,8,0,9,0,0},
-    {7,0,9,0,0,5,8,0,0},
-    {0,4,0,8,0,0,2,0,0},
-    {0,3,0,1,4,0,0,0,9}
-}};
+// const std::array<std::array<int,9>,9> instructions = {{
+//     {9,0,0,0,6,3,0,5,0},
+//     {0,0,2,0,0,1,0,9,0},
+//     {0,0,4,9,0,0,7,0,1},
+//     {0,0,6,0,1,0,0,8,0},
+//     {0,0,0,3,0,6,0,0,0},
+//     {0,1,0,0,8,0,9,0,0},
+//     {7,0,9,0,0,5,8,0,0},
+//     {0,4,0,8,0,0,2,0,0},
+//     {0,3,0,1,4,0,0,0,9}
+// }};
 
 Grid solution;
+Grid backpropagation_solution;
 Grid last_solution;
 
 copy_2D_to_3d (instructions, solution);
@@ -73,10 +74,11 @@ while (!is_solution_valid(solution)) {
 
     if (is_solution_valid(solution)) {
         std::cout << "Solution found!\n";
-    } else{
-        backpropagate(solution);
-        last_solution = Grid();  // Reset to allow inner loop to run again
     }
+    // } else{
+    //     backpropagate(backpropagation_solution, solution);
+    //     last_solution = Grid();  // Reset to allow inner loop to run again
+    // }
 }
 
 std::cout << "number_of_loops " << number_of_loops << "\n";
