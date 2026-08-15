@@ -354,6 +354,9 @@ Coordinates lowest_number_of_solutions(Grid& solution) {
     return best_cell_coords;   // {-1, -1} if the grid is fully solved
 }
 
+// Backtracking algorithm to solve the Sudoku puzzle
+// It recursively tries all possible candidates for the cell with the fewest possibilities
+// If a candidate leads to a valid solution, it returns true and updates the solution grid
 bool backtracking(Grid& solution) {
     // First propagate all logical deductions
     propagate(solution);
